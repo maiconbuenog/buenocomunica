@@ -160,13 +160,15 @@
   body.pj-review .pj-add-hint{display:none;}
   body.pj-review .pj-cell{cursor:default;}
 
-  .pj-overlay{position:fixed;inset:0;background:rgba(43,43,43,0.35);display:none;align-items:stretch;justify-content:flex-end;z-index:250;}
+  .pj-overlay{position:fixed;inset:0;background:rgba(43,43,43,0.45);display:none;align-items:center;justify-content:center;z-index:250;padding:24px;}
   .pj-overlay.show{display:flex;}
-  .pj-panel{width:min(420px,100%);background:var(--paper-raised);height:100%;overflow-y:auto;box-shadow:-12px 0 32px rgba(0,0,0,0.15);display:flex;flex-direction:column;}
-  .pj-tape{height:8px;width:100%;}
-  .pj-panel-inner{padding:26px 26px 100px;flex:1;}
-  .pj-panel-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;}
-  .pj-panel-head h3{font-family:'Anton',sans-serif;font-weight:400;font-size:20px;margin:0;}
+  .pj-panel{width:min(720px,100%);max-height:90vh;background:var(--paper-raised);border-radius:14px;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.25);display:flex;flex-direction:column;}
+  .pj-tape{height:8px;width:100%;border-radius:14px 14px 0 0;flex-shrink:0;}
+  .pj-panel-inner{padding:28px 32px;flex:1;}
+  .pj-panel-two-col{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+  @media (max-width:640px){ .pj-panel-two-col{grid-template-columns:1fr;} }
+  .pj-panel-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:22px;}
+  .pj-panel-head h3{font-family:'Anton',sans-serif;font-weight:400;font-size:22px;margin:0;}
   .pj-close-btn{background:none;border:none;font-size:20px;cursor:pointer;color:var(--ink-soft);line-height:1;}
   .pj-close-btn:hover{color:var(--ink);}
   .pj-field{margin-bottom:18px;}
@@ -194,7 +196,21 @@
   .pj-field-sep::before,.pj-field-sep::after{content:'';flex:1;height:1px;background:var(--line);}
   .pj-comment-box{background:var(--yellow-soft);border:1px solid var(--yellow-deep);border-radius:7px;padding:10px 12px;margin-bottom:16px;font-size:13px;color:var(--ink);}
 
-  .pj-panel-footer{position:sticky;bottom:0;background:var(--paper-raised);border-top:1px solid var(--line);padding:16px 26px;display:flex;justify-content:space-between;gap:10px;}
+  .pj-rte-toolbar{display:flex;gap:4px;margin-bottom:6px;}
+  .pj-rte-btn{width:28px;height:28px;border:1px solid var(--line);background:#fff;border-radius:5px;cursor:pointer;color:var(--ink-soft);font-size:13px;font-family:'DM Sans',sans-serif;display:flex;align-items:center;justify-content:center;}
+  .pj-rte-btn:hover{border-color:var(--yellow-deep);color:var(--ink);}
+  .pj-rte-btn.b{font-weight:700;}
+  .pj-rte-btn.i{font-style:italic;}
+  .pj-rte-btn.u{text-decoration:underline;}
+  .pj-rte-editable{
+    width:100%;min-height:80px;font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.5;padding:9px 11px;
+    border:1px solid var(--line);border-radius:7px;background:#fff;color:var(--ink);overflow-y:auto;max-height:220px;
+  }
+  .pj-rte-editable:focus{outline:none;border-color:var(--yellow-deep);}
+  .pj-rte-editable[contenteditable="false"]{background:var(--paper);color:var(--ink-soft);}
+  .pj-rte-editable:empty:before{content:attr(data-placeholder);color:var(--ink-soft);}
+
+  .pj-panel-footer{position:sticky;bottom:0;background:var(--paper-raised);border-top:1px solid var(--line);padding:16px 32px;display:flex;justify-content:space-between;gap:10px;flex-shrink:0;}
   .pj-btn-save{flex:1;background:var(--ink);color:#fff;border:none;border-radius:8px;padding:11px;font-weight:700;font-size:14px;cursor:pointer;}
   .pj-btn-save:hover{background:#1c1c1c;}
   .pj-btn-delete{background:none;border:1px solid var(--line);color:var(--ink-soft);border-radius:8px;padding:11px 14px;font-size:13px;cursor:pointer;}
@@ -296,35 +312,64 @@
         </div>
 
         <div class="pj-field"><label>Título</label><input type="text" id="pjTitle" placeholder="Ex: Lançamento da coleção"></div>
-        <div class="pj-field"><label>Data</label><input type="date" id="pjDate"></div>
-        <div class="pj-field"><label>Tipo de post</label><div class="pj-chip-select" id="pjTypeSelect"></div></div>
-        <div class="pj-field"><label>Status</label><div class="pj-status-select" id="pjStatusSelect"></div></div>
-        <div class="pj-field"><label>Legenda / notas</label><textarea id="pjCaption" placeholder="Legenda, briefing ou observações"></textarea></div>
-        <div class="pj-field"><label>Link (referência, drive, agendamento)</label><input type="url" id="pjLink" placeholder="https://"></div>
 
-        <div class="pj-field">
-          <label>Imagem</label>
-          <input type="url" id="pjImage" placeholder="Colar link da imagem (https://...)">
-          <div class="pj-field-sep">ou</div>
-          <div class="pj-upload-row">
-            <input type="file" id="pjImageFile" accept="image/*" style="display:none;">
-            <button type="button" class="pj-upload-btn" id="pjUploadBtn">Enviar do computador</button>
-            <span class="pj-upload-hint" id="pjUploadHint"></span>
+        <div class="pj-panel-two-col">
+          <div>
+            <div class="pj-field"><label>Data</label><input type="date" id="pjDate"></div>
+            <div class="pj-field"><label>Tipo de post</label><div class="pj-chip-select" id="pjTypeSelect"></div></div>
+            <div class="pj-field"><label>Status</label><div class="pj-status-select" id="pjStatusSelect"></div></div>
+            <div class="pj-field"><label>Link (referência, drive, agendamento)</label><input type="url" id="pjLink" placeholder="https://"></div>
+            <div class="pj-field">
+              <label>Imagem</label>
+              <input type="url" id="pjImage" placeholder="Colar link da imagem (https://...)">
+              <div class="pj-field-sep">ou</div>
+              <div class="pj-upload-row">
+                <input type="file" id="pjImageFile" accept="image/*" style="display:none;">
+                <button type="button" class="pj-upload-btn" id="pjUploadBtn">Enviar do computador</button>
+                <span class="pj-upload-hint" id="pjUploadHint"></span>
+              </div>
+              <div class="pj-preview" id="pjPreview">
+                <button type="button" class="pj-remove-img" id="pjRemoveImgBtn">✕</button>
+                <img id="pjPreviewImg" src="" alt="">
+              </div>
+            </div>
+            <div class="pj-field">
+              <label>Checklist antes de publicar</label>
+              <div class="pj-checklist" id="pjChecklist"></div>
+            </div>
           </div>
-          <div class="pj-preview" id="pjPreview">
-            <button type="button" class="pj-remove-img" id="pjRemoveImgBtn">✕</button>
-            <img id="pjPreviewImg" src="" alt="">
+
+          <div>
+            <div class="pj-field">
+              <label>Descrição do post (briefing)</label>
+              <div class="pj-rte-toolbar">
+                <button type="button" class="pj-rte-btn b" data-cmd="bold" data-target="pjBrief">B</button>
+                <button type="button" class="pj-rte-btn i" data-cmd="italic" data-target="pjBrief">I</button>
+                <button type="button" class="pj-rte-btn u" data-cmd="underline" data-target="pjBrief">U</button>
+              </div>
+              <div class="pj-rte-editable" id="pjBrief" contenteditable="true" data-placeholder="O que vai no post — ideia, roteiro, referências"></div>
+            </div>
+
+            <div class="pj-field">
+              <label>Legenda</label>
+              <div class="pj-rte-toolbar">
+                <button type="button" class="pj-rte-btn b" data-cmd="bold" data-target="pjCaption">B</button>
+                <button type="button" class="pj-rte-btn i" data-cmd="italic" data-target="pjCaption">I</button>
+                <button type="button" class="pj-rte-btn u" data-cmd="underline" data-target="pjCaption">U</button>
+              </div>
+              <div class="pj-rte-editable" id="pjCaption" contenteditable="true" data-placeholder="Legenda pra publicar"></div>
+            </div>
+
+            <div class="pj-field">
+              <label id="pjCommentLabel">Comentário</label>
+              <div class="pj-rte-toolbar">
+                <button type="button" class="pj-rte-btn b" data-cmd="bold" data-target="pjComment">B</button>
+                <button type="button" class="pj-rte-btn i" data-cmd="italic" data-target="pjComment">I</button>
+                <button type="button" class="pj-rte-btn u" data-cmd="underline" data-target="pjComment">U</button>
+              </div>
+              <div class="pj-rte-editable" id="pjComment" contenteditable="true" data-placeholder="Feedback sobre este post"></div>
+            </div>
           </div>
-        </div>
-
-        <div class="pj-field">
-          <label>Checklist antes de publicar</label>
-          <div class="pj-checklist" id="pjChecklist"></div>
-        </div>
-
-        <div class="pj-field">
-          <label id="pjCommentLabel">Comentário</label>
-          <textarea id="pjComment" placeholder="Feedback sobre este post"></textarea>
         </div>
       </div>
 
@@ -453,8 +498,6 @@ const PJ_TYPES = [
   {id:'stories', label:'Stories', color:'var(--t2)', soft:'var(--t2-soft)'},
   {id:'reels', label:'Reels', color:'var(--t3)', soft:'var(--t3-soft)'},
   {id:'carrossel', label:'Carrossel', color:'var(--t4)', soft:'var(--t4-soft)'},
-  {id:'video', label:'Vídeo', color:'var(--t5)', soft:'var(--t5-soft)'},
-  {id:'outro', label:'Outro', color:'var(--t6)', soft:'var(--t6-soft)'},
 ];
 const PJ_STATUSES = ['Ideia','Rascunho','Aprovado','Agendado','Publicado'];
 const PJ_CHECKLIST_ITEMS = ['Legenda revisada','Hashtags incluídas','Link da bio atualizado (se aplicável)','Arte aprovada pelo cliente'];
@@ -691,7 +734,7 @@ function pjRenderCalendar(){
       const chip = document.createElement('div');
       chip.className = 'pj-chip';
       chip.style.background = t.soft; chip.style.color = t.color;
-      chip.innerHTML = `<span class="pj-dot" style="background:${t.color}"></span>${p.title || '(sem título)'}${p.comment ? '<span title="Tem comentário">💬</span>' : ''}`;
+      chip.innerHTML = `<span class="pj-dot" style="background:${t.color}"></span><b>${t.label}:</b> ${p.title || '(sem título)'}${!pjRteEmpty(p.commentHtml) || p.comment ? '<span title="Tem comentário">💬</span>' : ''}`;
       chip.addEventListener('click', (e)=>{ e.stopPropagation(); pjOpenModal(p.id, key); });
       chipsEl.appendChild(chip);
     });
@@ -744,6 +787,19 @@ function pjGetChecklistValue(){
 function pjUpdateTape(){ document.getElementById('pjTape').style.background = pjTypeOf(pjSelectedType).color; }
 
 // ── MODAL ─────────────────────────────────────────────────────────────
+function pjEscapeHtml(s){
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+}
+function pjSetRte(id, html, plainFallback){
+  document.getElementById(id).innerHTML = html || (plainFallback ? pjEscapeHtml(plainFallback) : '');
+}
+function pjGetRte(id){
+  return document.getElementById(id).innerHTML.trim();
+}
+function pjRteEmpty(html){
+  return !html || html.replace(/<[^>]+>/g,'').trim() === '';
+}
+
 function pjOpenModal(id, presetDateKey, presetTitle){
   pjEditingId = id;
   const overlay = document.getElementById('pjOverlay');
@@ -754,9 +810,10 @@ function pjOpenModal(id, presetDateKey, presetTitle){
     document.getElementById('pjPanelTitle').textContent = PJ_REVIEW_MODE ? 'Revisar post' : 'Editar post';
     document.getElementById('pjTitle').value = p.title || '';
     document.getElementById('pjDate').value = p.date || '';
-    document.getElementById('pjCaption').value = p.caption || '';
+    pjSetRte('pjBrief', p.briefHtml);
+    pjSetRte('pjCaption', p.captionHtml, p.caption);
     document.getElementById('pjLink').value = p.link || '';
-    document.getElementById('pjComment').value = p.comment || '';
+    pjSetRte('pjComment', p.commentHtml, p.comment);
     checklistSaved = p.checklist || [];
     pjCurrentImage = p.image || '';
     document.getElementById('pjImage').value = pjCurrentImage.startsWith('data:') ? '' : pjCurrentImage;
@@ -767,9 +824,10 @@ function pjOpenModal(id, presetDateKey, presetTitle){
     document.getElementById('pjPanelTitle').textContent = 'Novo post';
     document.getElementById('pjTitle').value = presetTitle || '';
     document.getElementById('pjDate').value = presetDateKey || pjToKey(new Date());
-    document.getElementById('pjCaption').value = '';
+    pjSetRte('pjBrief', '');
+    pjSetRte('pjCaption', '');
     document.getElementById('pjLink').value = '';
-    document.getElementById('pjComment').value = '';
+    pjSetRte('pjComment', '');
     pjCurrentImage = '';
     document.getElementById('pjImage').value = '';
     pjSelectedType = PJ_TYPES[0].id;
@@ -780,7 +838,9 @@ function pjOpenModal(id, presetDateKey, presetTitle){
   document.getElementById('pjUploadHint').textContent = '';
 
   const locked = PJ_REVIEW_MODE;
-  ['pjTitle','pjDate','pjCaption','pjLink','pjImage'].forEach(fid=>{ document.getElementById(fid).disabled = locked; });
+  ['pjTitle','pjDate','pjLink','pjImage'].forEach(fid=>{ document.getElementById(fid).disabled = locked; });
+  ['pjBrief','pjCaption'].forEach(fid=>{ document.getElementById(fid).setAttribute('contenteditable', locked ? 'false' : 'true'); });
+  document.getElementById('pjComment').setAttribute('contenteditable', 'true');
   document.getElementById('pjUploadBtn').style.display = locked ? 'none' : 'inline-block';
   document.getElementById('pjRemoveImgBtn').style.display = locked ? 'none' : 'block';
   document.getElementById('pjCommentLabel').textContent = locked ? 'Deixe um comentário (opcional)' : 'Comentário do cliente';
@@ -829,9 +889,10 @@ async function pjHandleSave(){
     title, date,
     type: pjSelectedType,
     status: pjSelectedStatus,
-    caption: document.getElementById('pjCaption').value.trim(),
+    briefHtml: pjGetRte('pjBrief'),
+    captionHtml: pjGetRte('pjCaption'),
     link: document.getElementById('pjLink').value.trim(),
-    comment: document.getElementById('pjComment').value.trim(),
+    commentHtml: pjGetRte('pjComment'),
     checklist: pjGetChecklistValue(),
     image: pjCurrentImage,
   };
@@ -848,10 +909,10 @@ async function pjHandleSave(){
 }
 async function pjHandleReviewAction(newStatus){
   if(!pjEditingId) return;
-  const comment = document.getElementById('pjComment').value.trim();
+  const commentHtml = pjGetRte('pjComment');
   try{
-    await window._fb.updateDoc(window._fb.doc(window._fb.db,'calendarWorkspaces',pjActiveWorkspaceId,'posts',pjEditingId), {status:newStatus, comment});
-    pjPostsByWorkspace[pjActiveWorkspaceId] = pjPostsForActiveWorkspace().map(p=>p.id===pjEditingId ? {...p, status:newStatus, comment} : p);
+    await window._fb.updateDoc(window._fb.doc(window._fb.db,'calendarWorkspaces',pjActiveWorkspaceId,'posts',pjEditingId), {status:newStatus, commentHtml});
+    pjPostsByWorkspace[pjActiveWorkspaceId] = pjPostsForActiveWorkspace().map(p=>p.id===pjEditingId ? {...p, status:newStatus, commentHtml} : p);
     pjRenderCalendar(); pjCloseModal();
     pjToast(newStatus === 'Aprovado' ? 'Post aprovado.' : 'Ajuste solicitado.');
   }catch(err){ pjToast('Erro ao salvar — verifique a conexão.'); }
@@ -876,6 +937,18 @@ async function pjHandleReset(){
   }catch(err){ pjToast('Erro ao limpar — verifique a conexão.'); }
 }
 
+function pjSetupRteToolbars(){
+  document.querySelectorAll('.pj-rte-btn').forEach(btn=>{
+    btn.addEventListener('mousedown', e=>{ e.preventDefault(); });
+    btn.addEventListener('click', ()=>{
+      const target = document.getElementById(btn.dataset.target);
+      if(target.getAttribute('contenteditable') === 'false') return;
+      target.focus();
+      document.execCommand(btn.dataset.cmd, false, null);
+    });
+  });
+}
+
 // ── INIT ──────────────────────────────────────────────────────────────
 window.initPlanejamento = async function(){
   if(pjInitialized) return;
@@ -896,6 +969,7 @@ window.initPlanejamento = async function(){
     await pjLoadData();
   }
   pjRenderWorkspaceTabs(); pjRenderLinkRow(); pjRenderCalendar();
+  pjSetupRteToolbars();
 
   document.getElementById('pjPrevBtn').addEventListener('click', ()=>{ pjViewDate = new Date(pjViewDate.getFullYear(), pjViewDate.getMonth()-1, 1); pjRenderCalendar(); });
   document.getElementById('pjNextBtn').addEventListener('click', ()=>{ pjViewDate = new Date(pjViewDate.getFullYear(), pjViewDate.getMonth()+1, 1); pjRenderCalendar(); });
