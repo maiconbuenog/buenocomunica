@@ -21,10 +21,10 @@
     --yellow-deep:#C9A324;
     --shadow: 0 1px 2px rgba(43,43,43,0.06), 0 8px 24px rgba(43,43,43,0.08);
     /* cores auxiliares pros tipos de post — grafite/amarelo como base, tons neutros de apoio */
-    --t1:#2B2B2B; --t1-soft:#E8E7E5;
-    --t2:#8A6D00; --t2-soft:var(--yellow-soft);
-    --t3:#4A6B63; --t3-soft:#E1E9E6;
-    --t4:#4E6A8C; --t4-soft:#E1E7EF;
+    --t1:#E0B22E; --t1-soft:#FBF0C8;
+    --t2:#9A9CA1; --t2-soft:#ECECEE;
+    --t3:#8A63C9; --t3-soft:#EDE5F7;
+    --t4:#4E7BC0; --t4-soft:#E0EAF7;
     --t5:#7A5C3E; --t5-soft:#EFE6DA;
     --t6:#8A4A5A; --t6-soft:#F0DEE3;
   }
@@ -116,7 +116,7 @@
   .pj-topbar{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:18px;}
   .pj-actions{display:flex;align-items:center;gap:10px;}
   .pj-month-nav{display:flex;align-items:center;gap:14px;}
-  .pj-month-nav h2{font-family:'Raleway',sans-serif;font-weight:800;letter-spacing:.01em;font-size:28px;margin:0;min-width:230px;text-align:center;text-transform:uppercase;}
+  .pj-month-nav h2{font-family:'Raleway',sans-serif;font-weight:800;letter-spacing:.01em;font-size:28px;margin:0;min-width:0;text-align:center;text-transform:uppercase;}
   .pj-nav-btn{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:var(--paper-raised);color:var(--ink);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
   .pj-nav-btn:hover{background:#fff;border-color:var(--ink-soft);}
   .pj-today-btn{font-family:'Raleway',sans-serif;font-size:11px;text-transform:uppercase;letter-spacing:.08em;background:none;border:1px solid var(--line);border-radius:20px;padding:6px 12px;cursor:pointer;color:var(--ink-soft);}
@@ -229,7 +229,7 @@
   .pj-btn-save:hover{background:#1c1c1c;}
   .pj-btn-delete{background:none;border:1px solid var(--line);color:var(--ink-soft);border-radius:8px;padding:11px 14px;font-size:13px;cursor:pointer;}
   .pj-btn-delete:hover{border-color:#a83e3e;color:#a83e3e;}
-  .pj-btn-approve{flex:1;background:var(--t3);color:#fff;border:none;border-radius:8px;padding:11px;font-weight:700;font-size:14px;cursor:pointer;}
+  .pj-btn-approve{flex:1;background:#4A6B63;color:#fff;border:none;border-radius:8px;padding:11px;font-weight:700;font-size:14px;cursor:pointer;}
   .pj-btn-changes{flex:1;background:none;border:1px solid var(--yellow-deep);color:var(--yellow-deep);border-radius:8px;padding:11px;font-weight:700;font-size:14px;cursor:pointer;}
 
   .pj-review-banner{font-family:'Raleway',sans-serif;font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;background:var(--ink);color:var(--yellow);padding:9px 14px;border-radius:7px;margin-bottom:18px;text-align:center;}
@@ -335,6 +335,56 @@
     .pj-chip{justify-content:center;padding:5px 3px;gap:3px;}
     .pj-weekdays div{padding:0 2px 4px;font-size:9px;letter-spacing:.04em;}
   }
+  /* ── AJUSTES 3 ────────────────────────────────────────────────────── */
+  .pj-month-nav{gap:10px;flex-wrap:nowrap;}
+  .pj-legend-line{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:16px;}
+  .pj-carousel-wrap{margin-top:10px;}
+  .pj-carousel{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:8px;border-radius:14px;scrollbar-width:thin;-webkit-overflow-scrolling:touch;}
+  .pj-slide{flex:0 0 100%;scroll-snap-align:center;position:relative;border-radius:14px;overflow:hidden;background:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.9);}
+  .pj-slide img{width:100%;height:220px;object-fit:cover;display:block;cursor:zoom-in;}
+  .pj-slide .pj-remove-img{position:absolute;top:8px;right:8px;background:rgba(43,43,43,.75);color:#fff;border:none;border-radius:999px;width:26px;height:26px;cursor:pointer;font-size:13px;}
+  .pj-carousel-count{font-size:11px;color:var(--ink-soft);text-align:center;margin-top:6px;}
+  .pj-lightbox{position:fixed;inset:0;z-index:500;background:rgba(20,20,20,.82);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);display:none;align-items:center;justify-content:center;}
+  .pj-lightbox.show{display:flex;}
+  .pj-lightbox img{max-width:92vw;max-height:88vh;object-fit:contain;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,.5);}
+  .pj-lb-btn{position:absolute;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);color:#fff;border-radius:999px;width:44px;height:44px;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+  .pj-lb-btn:hover{background:rgba(255,255,255,.3);}
+  .pj-lb-close{top:18px;right:18px;}
+  .pj-lb-prev{left:18px;top:50%;transform:translateY(-50%);}
+  .pj-lb-next{right:18px;top:50%;transform:translateY(-50%);}
+  .pj-lb-count{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);color:#fff;font-size:13px;}
+  @media (max-width:720px){
+    .pj-month-nav{gap:6px;}
+    .pj-month-nav h2{font-size:18px;}
+    .pj-slide img{height:200px;}
+    .pj-legend-line{gap:4px 12px;}
+  }
+  /* ── AJUSTES 4: filtros, lista ────────────────────────────────────── */
+  .pj-top-right{display:flex;align-items:center;gap:10px;}
+  .pj-seg{display:inline-flex;background:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.85);border-radius:999px;padding:3px;box-shadow:inset 0 1px 0 rgba(255,255,255,.9);}
+  .pj-seg button{border:none;background:none;font-family:'Raleway',sans-serif;font-size:12px;font-weight:600;color:var(--ink-soft);padding:6px 13px;border-radius:999px;cursor:pointer;}
+  .pj-seg button.active{background:#fff;color:var(--ink);box-shadow:0 1px 4px rgba(43,43,43,.12);}
+  .pj-filters{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:14px;}
+  .pj-filter-label{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-soft);margin-right:2px;}
+  .pj-filters select{font-family:'Raleway',sans-serif;font-size:12.5px;font-weight:500;color:var(--ink);background:rgba(255,255,255,.65);border:1px solid rgba(255,255,255,.9);border-radius:999px;padding:7px 12px;box-shadow:0 1px 3px rgba(43,43,43,.06);cursor:pointer;}
+  .pj-filter-clear{border:none;background:none;color:var(--yellow-deep);font-family:'Raleway',sans-serif;font-size:12px;font-weight:700;cursor:pointer;text-decoration:underline;}
+  .pj-list{flex-direction:column;gap:10px;}
+  .pj-list-item{display:flex;gap:14px;background:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.9);border-radius:16px;padding:14px 16px;cursor:pointer;box-shadow:0 2px 10px rgba(43,43,43,.05), inset 0 1px 0 rgba(255,255,255,.9);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);transition:background .15s;}
+  .pj-list-item:hover{background:rgba(255,255,255,.85);}
+  .pj-list-date{display:flex;flex-direction:column;align-items:center;min-width:44px;}
+  .pj-list-date b{font-size:22px;font-weight:800;line-height:1.1;}
+  .pj-list-date span{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-soft);}
+  .pj-list-body{min-width:0;flex:1;}
+  .pj-list-head{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--ink-soft);margin-bottom:3px;}
+  .pj-list-type{font-weight:700;text-transform:uppercase;letter-spacing:.06em;font-size:11px;}
+  .pj-list-title{font-weight:700;font-size:15.5px;margin-bottom:4px;}
+  .pj-list-text{font-size:14px;line-height:1.5;color:var(--ink);display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;}
+  .pj-list-text.muted{color:var(--ink-soft);}
+  .pj-list-empty{text-align:center;color:var(--ink-soft);padding:40px 10px;font-size:14px;}
+  @media (max-width:720px){
+    .pj-top-right{width:100%;justify-content:space-between;}
+    .pj-list-item{padding:12px 13px;gap:11px;}
+  }
 </style>
 </head>
 <body>
@@ -371,31 +421,51 @@
   <div class="nav-bar" id="navBar"></div>
 
   <div id="viewPlanejamento" class="view active">
-    <div class="pj-topbar">
-      <div class="pj-actions" id="pjEditorActions">
-        <button class="pj-icon-btn" id="pjResetBtn" title="Limpar posts deste cliente">↺</button>
-      </div>
-    </div>
     <div class="pj-review-banner" id="pjReviewBanner" style="display:none;"></div>
 
     <div class="pj-topbar" style="margin-bottom:14px;">
       <div class="pj-month-nav">
+        <div class="pj-actions" id="pjEditorActions">
+          <button class="pj-icon-btn" id="pjResetBtn" title="Limpar todos os posts deste cliente" aria-label="Limpar todos os posts deste cliente"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg></button>
+        </div>
         <button class="pj-nav-btn" id="pjPrevBtn">‹</button>
         <h2 id="pjMonthLabel"></h2>
         <button class="pj-nav-btn" id="pjNextBtn">›</button>
       </div>
-      <button class="pj-today-btn" id="pjTodayBtn">hoje</button>
+      <div class="pj-top-right">
+        <div class="pj-seg" role="group" aria-label="Modo de visualização">
+          <button type="button" id="pjViewCalBtn" class="active">Calendário</button>
+          <button type="button" id="pjViewListBtn">Lista</button>
+        </div>
+        <button class="pj-today-btn" id="pjTodayBtn">hoje</button>
+      </div>
+    </div>
+
+    <div class="pj-filters" id="pjFilters">
+      <span class="pj-filter-label">Filtrar</span>
+      <select id="pjFilterType" aria-label="Filtrar por tipo">
+        <option value="">Todos os tipos</option>
+        <option value="feed">Feed</option><option value="stories">Stories</option><option value="reels">Reels</option><option value="carrossel">Carrossel</option>
+      </select>
+      <select id="pjFilterStatus" aria-label="Filtrar por situação">
+        <option value="">Todas as situações</option>
+        <option value="pendente">Falta aprovar</option>
+        <option value="aprovado">Aprovados</option>
+        <option value="ajuste">Ajuste ou reprovado</option>
+      </select>
+      <button type="button" class="pj-filter-clear" id="pjFilterClear" style="display:none;">limpar</button>
     </div>
 
     <div class="pj-ws-tabs" id="pjWsTabs"></div>
     <div class="pj-link-row" id="pjLinkRow"></div>
-    <div class="pj-legend" id="pjLegend"></div>
-    <div class="pj-legend" id="pjReviewLegend" style="margin-top:-8px;"></div>
 
     <div class="pj-weekdays">
       <div>Dom</div><div>Seg</div><div>Ter</div><div>Qua</div><div>Qui</div><div>Sex</div><div>Sáb</div>
     </div>
     <div class="pj-grid" id="pjGrid"></div>
+    <div class="pj-list" id="pjList" style="display:none;"></div>
+
+    <div class="pj-legend pj-legend-line" id="pjLegend"></div>
 
     <div style="margin-top:18px;">
       <button class="pj-btn-primary" id="pjNewPostBtn">+ Novo post</button>
@@ -434,6 +504,27 @@
               <div class="pj-rte-editable" id="pjCaption" contenteditable="true" data-placeholder="Legenda pra publicar"></div>
             </div>
 
+          </div>
+
+          <div class="pj-col-side">
+            <div class="pj-field"><label>Data</label><input type="date" id="pjDate"></div>
+            <div class="pj-field"><label>Tipo de post</label><div class="pj-chip-select" id="pjTypeSelect"></div></div>
+            <div class="pj-field"><label>Status</label><div class="pj-status-select" id="pjStatusSelect"></div></div>
+            <div class="pj-field"><label>Link (referência, drive, agendamento)</label><input type="url" id="pjLink" placeholder="https://"></div>
+            <div class="pj-field" id="pjImagesField">
+              <label>Imagens</label>
+              <input type="url" id="pjImage" placeholder="Colar link da imagem e dar Enter">
+              <div class="pj-field-sep">ou</div>
+              <div class="pj-upload-row">
+                <input type="file" id="pjImageFile" accept="image/*" multiple style="display:none;">
+                <button type="button" class="pj-upload-btn" id="pjUploadBtn">Enviar do computador</button>
+                <span class="pj-upload-hint" id="pjUploadHint"></span>
+              </div>
+              <div class="pj-carousel-wrap" id="pjCarouselWrap" style="display:none;">
+                <div class="pj-carousel" id="pjCarousel"></div>
+                <div class="pj-carousel-count" id="pjCarouselCount"></div>
+              </div>
+            </div>
             <div class="pj-field" id="pjReviewLogField" style="display:none;"><label>Histórico de revisão</label><div class="pj-review-log" id="pjReviewLog"></div></div>
               <div class="pj-field">
               <label id="pjCommentLabel">Comentário</label>
@@ -445,32 +536,12 @@
               <div class="pj-rte-editable" id="pjComment" contenteditable="true" data-placeholder="Feedback sobre este post"></div>
             </div>
           </div>
-
-          <div class="pj-col-side">
-            <div class="pj-field"><label>Data</label><input type="date" id="pjDate"></div>
-            <div class="pj-field"><label>Tipo de post</label><div class="pj-chip-select" id="pjTypeSelect"></div></div>
-            <div class="pj-field"><label>Status</label><div class="pj-status-select" id="pjStatusSelect"></div></div>
-            <div class="pj-field"><label>Link (referência, drive, agendamento)</label><input type="url" id="pjLink" placeholder="https://"></div>
-            <div class="pj-field">
-              <label>Imagem</label>
-              <input type="url" id="pjImage" placeholder="Colar link da imagem (https://...)">
-              <div class="pj-field-sep">ou</div>
-              <div class="pj-upload-row">
-                <input type="file" id="pjImageFile" accept="image/*" style="display:none;">
-                <button type="button" class="pj-upload-btn" id="pjUploadBtn">Enviar do computador</button>
-                <span class="pj-upload-hint" id="pjUploadHint"></span>
-              </div>
-              <div class="pj-preview" id="pjPreview">
-                <button type="button" class="pj-remove-img" id="pjRemoveImgBtn">✕</button>
-                <img id="pjPreviewImg" src="" alt="">
-              </div>
-            </div>
-          </div>
         </div>
       </div>
 
       <div class="pj-panel-footer" id="pjEditorFooter">
         <button class="pj-btn-delete" id="pjDeleteBtn" style="display:none;">Excluir</button>
+        <button class="pj-btn-delete" id="pjDuplicateBtn" style="display:none;">Duplicar</button>
         <button class="pj-btn-save" id="pjSaveBtn">Salvar</button>
       </div>
       <div class="pj-panel-footer" id="pjReviewFooter" style="display:none;">
@@ -482,6 +553,14 @@
   </div>
 
   <div class="pj-toast" id="pjToast"></div>
+
+  <div class="pj-lightbox" id="pjLightbox">
+    <button type="button" class="pj-lb-btn pj-lb-close" id="pjLbClose" aria-label="Fechar">✕</button>
+    <button type="button" class="pj-lb-btn pj-lb-prev" id="pjLbPrev" aria-label="Anterior">‹</button>
+    <img id="pjLbImg" src="" alt="">
+    <button type="button" class="pj-lb-btn pj-lb-next" id="pjLbNext" aria-label="Próxima">›</button>
+    <div class="pj-lb-count" id="pjLbCount"></div>
+  </div>
 
   <div class="pj-dialog-overlay" id="pjNameGate" style="z-index:400;">
     <div class="pj-dialog-box">
@@ -604,7 +683,7 @@ const PJ_TYPES = [
   {id:'reels', label:'Reels', color:'var(--t3)', soft:'var(--t3-soft)'},
   {id:'carrossel', label:'Carrossel', color:'var(--t4)', soft:'var(--t4-soft)'},
 ];
-const PJ_STATUSES = ['Ideia','Rascunho','Aprovado','Agendado','Publicado'];
+const PJ_STATUSES = ['Aprovado','Agendado','Publicado'];
 const PJ_DECISIONS = {
   aprovado:  {emoji:'✅', label:'Aprovado', status:'Aprovado'},
   ajuste:    {emoji:'⚠️', label:'Ajuste solicitado', status:'Rascunho'},
@@ -626,8 +705,17 @@ let pjPostsByWorkspace = {};
 let pjViewDate = new Date();
 let pjEditingId = null;
 let pjSelectedType = PJ_TYPES[0].id;
-let pjSelectedStatus = PJ_STATUSES[0];
-let pjCurrentImage = '';
+let pjSelectedStatus = null;
+let pjFilterType = '';
+let pjFilterStatus = '';
+let pjViewMode = 'cal';
+try{ const v = localStorage.getItem('pj-view-mode'); if(v === 'list' || v === 'cal') pjViewMode = v; else if(window.matchMedia && window.matchMedia('(max-width:720px)').matches) pjViewMode = 'list'; }catch(e){}
+let pjImages = [];
+let pjLbIndex = 0;
+const PJ_MAX_IMAGES = 30;
+const PJ_MAX_IMG_CHARS = 900000;
+let pjImagesLoaded = true;
+let pjRemovedImageIds = [];
 let pjInitialized = false;
 
 function pjTypeOf(id){ return PJ_TYPES.find(t=>t.id===id) || PJ_TYPES[0]; }
@@ -734,6 +822,76 @@ async function pjLoadData(){
   await Promise.all(pjWorkspaces.map(w => pjLoadWorkspacePosts(w.id)));
 }
 
+function pjSituation(p){
+  if(['Agendado','Publicado'].includes(p.status)) return 'aprovado';
+  const rv = pjLastReview(p);
+  if(rv) return rv.decision === 'aprovado' ? 'aprovado' : 'ajuste';
+  if(p.status === 'Aprovado') return 'aprovado';
+  return 'pendente';
+}
+function pjPassesFilter(p){
+  if(pjFilterType && p.type !== pjFilterType) return false;
+  if(pjFilterStatus && pjSituation(p) !== pjFilterStatus) return false;
+  return true;
+}
+function pjHtmlToText(html){
+  if(!html) return '';
+  const doc = new DOMParser().parseFromString('<body>' + String(html).replace(/<br\s*\/?>|<\/(div|p)>/gi, ' $&') + '</body>', 'text/html');
+  return (doc.body.textContent || '').replace(/\s+/g,' ').trim();
+}
+function pjApplyViewMode(){
+  const list = pjViewMode === 'list';
+  document.getElementById('pjGrid').style.display = list ? 'none' : '';
+  document.querySelector('.pj-weekdays').style.display = list ? 'none' : '';
+  document.getElementById('pjList').style.display = list ? 'flex' : 'none';
+  document.getElementById('pjViewCalBtn').classList.toggle('active', !list);
+  document.getElementById('pjViewListBtn').classList.toggle('active', list);
+}
+function pjUpdateFilterUi(){
+  document.getElementById('pjFilterType').value = pjFilterType;
+  document.getElementById('pjFilterStatus').value = pjFilterStatus;
+  document.getElementById('pjFilterClear').style.display = (pjFilterType || pjFilterStatus) ? '' : 'none';
+}
+function pjRenderList(){
+  const el = document.getElementById('pjList');
+  el.innerHTML = '';
+  const y = pjViewDate.getFullYear(), m = pjViewDate.getMonth();
+  const prefix = y + '-' + String(m+1).padStart(2,'0') + '-';
+  const items = pjPostsForActiveWorkspace().filter(p=>(p.date||'').startsWith(prefix) && pjPassesFilter(p)).sort((a,b)=>(a.date||'').localeCompare(b.date||'') || (a.title||'').localeCompare(b.title||''));
+  if(!items.length){
+    const empty = document.createElement('div'); empty.className = 'pj-list-empty';
+    empty.textContent = (pjFilterType || pjFilterStatus) ? 'Nenhum post neste mês com esses filtros.' : 'Nenhum post neste mês.';
+    el.appendChild(empty); return;
+  }
+  const wd = ['dom','seg','ter','qua','qui','sex','sáb'];
+  items.forEach(p=>{
+    const t = pjTypeOf(p.type);
+    const [yy,mm,dd] = (p.date||'').split('-').map(Number);
+    const dow = wd[new Date(yy, mm-1, dd).getDay()];
+    const row = document.createElement('div'); row.className = 'pj-list-item';
+    const dateEl = document.createElement('div'); dateEl.className = 'pj-list-date';
+    const dn = document.createElement('b'); dn.textContent = String(dd).padStart(2,'0');
+    const dw = document.createElement('span'); dw.textContent = dow;
+    dateEl.append(dn, dw);
+    const body = document.createElement('div'); body.className = 'pj-list-body';
+    const head = document.createElement('div'); head.className = 'pj-list-head';
+    const dot = document.createElement('span'); dot.className = 'pj-dot'; dot.style.background = t.color;
+    const tl = document.createElement('span'); tl.className = 'pj-list-type'; tl.textContent = t.label;
+    head.append(dot, tl);
+    const rv = pjLastReview(p); const info = rv ? PJ_DECISIONS[rv.decision] : null;
+    if(info){ const em = document.createElement('span'); em.textContent = info.emoji; em.title = info.label + ' por ' + rv.by; head.appendChild(em); }
+    if(!pjRteEmpty(p.commentHtml) || p.comment){ const cm = document.createElement('span'); cm.textContent = '💬'; cm.title = 'Tem comentário'; head.appendChild(cm); }
+    const title = document.createElement('div'); title.className = 'pj-list-title'; title.textContent = p.title || '(sem título)';
+    body.append(head, title);
+    const cap = pjHtmlToText(p.captionHtml || p.caption);
+    const brief = pjHtmlToText(p.briefHtml);
+    if(cap){ const c = document.createElement('div'); c.className = 'pj-list-text'; c.textContent = cap; body.appendChild(c); }
+    else if(brief){ const c = document.createElement('div'); c.className = 'pj-list-text muted'; c.textContent = brief; body.appendChild(c); }
+    row.append(dateEl, body);
+    row.addEventListener('click', async ()=>{ await pjRefreshPost(p.id); pjOpenModal(p.id, p.date); });
+    el.appendChild(row);
+  });
+}
 function pjPostsForActiveWorkspace(){ return pjPostsByWorkspace[pjActiveWorkspaceId] || []; }
 
 // ── WORKSPACE TABS ───────────────────────────────────────────────────────
@@ -814,8 +972,9 @@ async function pjEditWorkspace(id){
 
 // ── LEGEND & CALENDAR ────────────────────────────────────────────────────
 function pjRenderLegend(){
-  document.getElementById('pjLegend').innerHTML = PJ_TYPES.map(t=>`<span><span class="pj-dot" style="background:${t.color}"></span>${t.label}</span>`).join('');
-  document.getElementById('pjReviewLegend').innerHTML = Object.values(PJ_DECISIONS).map(d=>`<span>${d.emoji} ${d.label}</span>`).join('');
+  const types = PJ_TYPES.map(t=>`<span><span class="pj-dot" style="background:${t.color}"></span>${t.label}</span>`).join('');
+  const decs = Object.values(PJ_DECISIONS).map(d=>`<span>${d.emoji} ${d.label}</span>`).join('');
+  document.getElementById('pjLegend').innerHTML = types + decs;
 }
 
 function pjRenderCalendar(){
@@ -845,13 +1004,13 @@ function pjRenderCalendar(){
       cell.addEventListener('dragleave', (e)=>{ if(!cell.contains(e.relatedTarget)) cell.classList.remove('drag-over'); });
       cell.addEventListener('drop', (e)=>{ e.preventDefault(); cell.classList.remove('drag-over'); pjMovePost(e.dataTransfer.getData('text/plain'), key); });
     }
-    const dayPosts = pjPostsForActiveWorkspace().filter(p=>p.date===key);
+    const dayPosts = pjPostsForActiveWorkspace().filter(p=>p.date===key && pjPassesFilter(p));
     const chipsEl = cell.querySelector('.pj-chips');
     dayPosts.slice(0,3).forEach(p=>{
       const t = pjTypeOf(p.type);
       const chip = document.createElement('div');
       chip.className = 'pj-chip';
-      chip.style.background = t.soft; chip.style.color = t.color;
+      chip.style.background = t.soft; chip.style.color = 'var(--ink)';
       const rv = pjLastReview(p); const rvInfo = rv ? PJ_DECISIONS[rv.decision] : null;
       const revMark = rvInfo ? `<span title="${rvInfo.label} por ${pjEscapeAttr(rv.by)}">${rvInfo.emoji}</span>` : '';
       chip.title = (t.label + ': ' + (p.title || '(sem título)'));
@@ -871,6 +1030,7 @@ function pjRenderCalendar(){
     }
     grid.appendChild(cell);
   }
+  pjApplyViewMode(); pjUpdateFilterUi(); pjRenderList();
 }
 
 async function pjMovePost(id, newKey){
@@ -906,7 +1066,7 @@ function pjRenderStatusSelect(){
     const btn = document.createElement('button'); btn.type = 'button'; btn.textContent = s;
     if(s === pjSelectedStatus) btn.classList.add('active');
     if(PJ_REVIEW_MODE){ btn.style.opacity = s === pjSelectedStatus ? '1' : '.35'; btn.style.cursor = 'default'; }
-    else { btn.addEventListener('click', ()=>{ pjSelectedStatus = s; pjRenderStatusSelect(); }); }
+    else { btn.addEventListener('click', ()=>{ pjSelectedStatus = (pjSelectedStatus === s) ? null : s; pjRenderStatusSelect(); }); }
     el.appendChild(btn);
   });
 }
@@ -940,11 +1100,15 @@ function pjOpenModal(id, presetDateKey, presetTitle){
     document.getElementById('pjLink').value = p.link || '';
     pjSetRte('pjComment', p.commentHtml, p.comment);
     pjRenderReviewLog(p);
-    pjCurrentImage = p.image || '';
-    document.getElementById('pjImage').value = pjCurrentImage.startsWith('data:') ? '' : pjCurrentImage;
+    pjImages = Array.isArray(p.images) && p.images.length ? p.images.map(d=>({data:d})) : (p.image ? [{data:p.image}] : []);
+    pjRemovedImageIds = [];
+    pjImagesLoaded = false;
+    document.getElementById('pjImage').value = '';
+    pjLoadImages(id);
     pjSelectedType = p.type || PJ_TYPES[0].id;
-    pjSelectedStatus = p.status || PJ_STATUSES[0];
+    pjSelectedStatus = PJ_STATUSES.includes(p.status) ? p.status : null;
     deleteBtn.style.display = PJ_REVIEW_MODE ? 'none' : 'inline-block';
+    document.getElementById('pjDuplicateBtn').style.display = PJ_REVIEW_MODE ? 'none' : 'inline-block';
   } else {
     document.getElementById('pjPanelTitle').textContent = 'Novo post';
     document.getElementById('pjTitle').value = presetTitle || '';
@@ -953,12 +1117,15 @@ function pjOpenModal(id, presetDateKey, presetTitle){
     pjSetRte('pjCaption', '');
     document.getElementById('pjLink').value = '';
     pjSetRte('pjComment', '');
-    pjCurrentImage = '';
+    pjImages = [];
+    pjRemovedImageIds = [];
+    pjImagesLoaded = true;
     document.getElementById('pjImage').value = '';
     pjSelectedType = PJ_TYPES[0].id;
     pjRenderReviewLog(null);
-    pjSelectedStatus = PJ_STATUSES[0];
+    pjSelectedStatus = null;
     deleteBtn.style.display = 'none';
+    document.getElementById('pjDuplicateBtn').style.display = 'none';
   }
   document.getElementById('pjImageFile').value = '';
   document.getElementById('pjUploadHint').textContent = '';
@@ -967,20 +1134,98 @@ function pjOpenModal(id, presetDateKey, presetTitle){
   ['pjTitle','pjDate','pjLink','pjImage'].forEach(fid=>{ document.getElementById(fid).disabled = locked; });
   ['pjBrief','pjCaption'].forEach(fid=>{ document.getElementById(fid).setAttribute('contenteditable', locked ? 'false' : 'true'); });
   document.getElementById('pjComment').setAttribute('contenteditable', 'true');
-  document.getElementById('pjUploadBtn').style.display = locked ? 'none' : 'inline-block';
-  document.getElementById('pjRemoveImgBtn').style.display = locked ? 'none' : 'block';
+    document.getElementById('pjImage').style.display = locked ? 'none' : '';
+  document.querySelector('#pjImagesField .pj-field-sep').style.display = locked ? 'none' : '';
+  document.querySelector('#pjImagesField .pj-upload-row').style.display = locked ? 'none' : '';
   document.getElementById('pjCommentLabel').textContent = locked ? 'Deixe um comentário (opcional)' : 'Comentário do cliente';
   document.getElementById('pjEditorFooter').style.display = locked ? 'none' : 'flex';
   document.getElementById('pjReviewFooter').style.display = locked ? 'flex' : 'none';
 
-  pjRenderTypeSelect(); pjRenderStatusSelect(); pjUpdateTape(); pjUpdatePreview();
+  pjRenderTypeSelect(); pjRenderStatusSelect(); pjUpdateTape(); pjRenderCarousel();
   overlay.classList.add('show');
 }
 function pjCloseModal(){ document.getElementById('pjOverlay').classList.remove('show'); pjEditingId = null; }
-function pjUpdatePreview(){
-  const preview = document.getElementById('pjPreview'), img = document.getElementById('pjPreviewImg');
-  if(pjCurrentImage){ img.src = pjCurrentImage; preview.style.display = 'block'; }
-  else { preview.style.display = 'none'; }
+function pjRenderCarousel(){
+  const wrap = document.getElementById('pjCarouselWrap'), el = document.getElementById('pjCarousel');
+  el.innerHTML = '';
+  if(!pjImages.length){ wrap.style.display = 'none'; return; }
+  wrap.style.display = 'block';
+  pjImages.forEach((src, i)=>{
+    const slide = document.createElement('div'); slide.className = 'pj-slide';
+    const img = document.createElement('img'); img.src = src.data; img.alt = 'Imagem ' + (i+1); img.loading = 'lazy';
+    img.addEventListener('click', ()=>pjOpenLightbox(i));
+    slide.appendChild(img);
+    if(!PJ_REVIEW_MODE){
+      const rm = document.createElement('button'); rm.type = 'button'; rm.className = 'pj-remove-img'; rm.textContent = '✕'; rm.title = 'Remover imagem';
+      rm.addEventListener('click', (e)=>{ e.stopPropagation(); const [gone] = pjImages.splice(i,1); if(gone && gone.id) pjRemovedImageIds.push(gone.id); pjRenderCarousel(); });
+      slide.appendChild(rm);
+    }
+    el.appendChild(slide);
+  });
+  el.scrollLeft = 0;
+  pjUpdateCarouselCount();
+}
+function pjUpdateCarouselCount(){
+  const el = document.getElementById('pjCarousel'), c = document.getElementById('pjCarouselCount');
+  const n = pjImages.length;
+  if(n < 2){ c.textContent = n ? 'Toque na imagem para ampliar' : ''; return; }
+  const idx = Math.min(n-1, Math.round(el.scrollLeft / Math.max(1, el.clientWidth)));
+  c.textContent = (idx+1) + ' / ' + n + ' · deslize para ver mais · clique para ampliar';
+}
+function pjOpenLightbox(i){
+  pjLbIndex = i; pjUpdateLightbox();
+  document.getElementById('pjLightbox').classList.add('show');
+}
+function pjCloseLightbox(){ document.getElementById('pjLightbox').classList.remove('show'); }
+function pjLbStep(d){
+  if(pjImages.length < 2) return;
+  pjLbIndex = (pjLbIndex + d + pjImages.length) % pjImages.length; pjUpdateLightbox();
+}
+function pjUpdateLightbox(){
+  document.getElementById('pjLbImg').src = (pjImages[pjLbIndex] && pjImages[pjLbIndex].data) || '';
+  document.getElementById('pjLbCount').textContent = pjImages.length > 1 ? (pjLbIndex+1) + ' / ' + pjImages.length : '';
+  const multi = pjImages.length > 1;
+  document.getElementById('pjLbPrev').style.display = multi ? '' : 'none';
+  document.getElementById('pjLbNext').style.display = multi ? '' : 'none';
+}
+function pjImgsCollection(postId){ return window._fb.collection(window._fb.db,'calendarWorkspaces',pjActiveWorkspaceId,'posts',postId,'imagens'); }
+async function pjLoadImages(postId){
+  try{
+    const snap = await window._fb.getDocs(pjImgsCollection(postId));
+    if(pjEditingId !== postId) return;
+    const stored = snap.docs.map(d=>({id:d.id, ...d.data()})).sort((a,b)=>(a.order||0)-(b.order||0)).map(d=>({id:d.id, data:d.data, order:d.order}));
+    const legacy = pjImages.filter(i=>!i.id);
+    pjImages = [...stored, ...legacy];
+    pjImagesLoaded = true;
+    pjRenderCarousel();
+  }catch(err){
+    if(pjEditingId === postId){ pjImagesLoaded = true; pjToast('Não consegui carregar as imagens: ' + (err && err.code ? err.code : 'conexão')); }
+  }
+}
+async function pjSaveImages(postId){
+  const col = pjImgsCollection(postId);
+  for(const id of pjRemovedImageIds){
+    await window._fb.deleteDoc(window._fb.doc(window._fb.db,'calendarWorkspaces',pjActiveWorkspaceId,'posts',postId,'imagens',id));
+  }
+  for(let i=0;i<pjImages.length;i++){
+    const im = pjImages[i];
+    if(im.id){
+      if(im.order !== i){ await window._fb.updateDoc(window._fb.doc(window._fb.db,'calendarWorkspaces',pjActiveWorkspaceId,'posts',postId,'imagens',im.id), {order:i}); }
+    } else {
+      const ref = await window._fb.addDoc(col, {data: im.data, order: i});
+      im.id = ref.id;
+    }
+    im.order = i;
+  }
+  pjRemovedImageIds = [];
+}
+async function pjDeletePostImages(wsId, postId){
+  const snap = await window._fb.getDocs(window._fb.collection(window._fb.db,'calendarWorkspaces',wsId,'posts',postId,'imagens'));
+  for(const d of snap.docs){ await window._fb.deleteDoc(d.ref); }
+}
+function pjAddImage(src){
+  if(pjImages.length >= PJ_MAX_IMAGES){ pjToast('Máximo de ' + PJ_MAX_IMAGES + ' imagens por post.'); return false; }
+  pjImages.push({data: src}); return true;
 }
 function pjResizeAndEncode(file){
   return new Promise((resolve, reject)=>{
@@ -1007,30 +1252,56 @@ function pjResizeAndEncode(file){
 }
 
 // ── CRUD ──────────────────────────────────────────────────────────────
-async function pjHandleSave(){
-  const title = document.getElementById('pjTitle').value.trim();
-  const date = document.getElementById('pjDate').value;
-  if(!date){ pjToast('Escolha uma data.'); return; }
-  const data = {
-    title, date,
+function pjCollectFormData(){
+  return {
+    title: document.getElementById('pjTitle').value.trim(),
+    date: document.getElementById('pjDate').value,
     type: pjSelectedType,
-    status: pjSelectedStatus,
-    briefHtml: pjGetRte('pjBrief'),
-    captionHtml: pjGetRte('pjCaption'),
+    status: pjSelectedStatus || '',
+    briefHtml: pjSanitizeHtml(pjGetRte('pjBrief')),
+    captionHtml: pjSanitizeHtml(pjGetRte('pjCaption')),
     link: document.getElementById('pjLink').value.trim(),
-    commentHtml: pjGetRte('pjComment'),
-    image: pjCurrentImage,
+    commentHtml: pjSanitizeHtml(pjGetRte('pjComment')),
+    images: [],
+    image: '',
   };
+}
+async function pjHandleSave(){
+  const data = pjCollectFormData();
+  if(!data.date){ pjToast('Escolha uma data.'); return; }
+  if(!pjImagesLoaded){ pjToast('Aguarde as imagens carregarem.'); return; }
+  if(pjImages.some(i=>(i.data||'').length > PJ_MAX_IMG_CHARS)){ pjToast('Uma das imagens está pesada demais. Remova ou use um link.'); return; }
   try{
-    if(pjEditingId){
-      await window._fb.setDoc(window._fb.doc(window._fb.db,'calendarWorkspaces',pjActiveWorkspaceId,'posts',pjEditingId), data, {merge:true});
-      pjPostsByWorkspace[pjActiveWorkspaceId] = pjPostsForActiveWorkspace().map(p=>p.id===pjEditingId ? {...p, ...data} : p);
+    let id = pjEditingId;
+    if(id){
+      await window._fb.setDoc(window._fb.doc(window._fb.db,'calendarWorkspaces',pjActiveWorkspaceId,'posts',id), data, {merge:true});
+      pjPostsByWorkspace[pjActiveWorkspaceId] = pjPostsForActiveWorkspace().map(p=>p.id===id ? {...p, ...data} : p);
     } else {
       const ref = await window._fb.addDoc(pjPostsCollection(pjActiveWorkspaceId), data);
-      pjPostsByWorkspace[pjActiveWorkspaceId] = [...pjPostsForActiveWorkspace(), {id: ref.id, ...data}];
+      id = ref.id;
+      pjPostsByWorkspace[pjActiveWorkspaceId] = [...pjPostsForActiveWorkspace(), {id, ...data}];
     }
+    await pjSaveImages(id);
     pjRenderCalendar(); pjCloseModal(); pjToast('Post salvo.');
-  }catch(err){ pjToast('Erro ao salvar — verifique a conexão.'); }
+  }catch(err){ pjToast('Erro ao salvar: ' + (err && err.code ? err.code : 'verifique a conexão')); }
+}
+async function pjHandleDuplicate(){
+  if(!pjEditingId || PJ_REVIEW_MODE) return;
+  if(!pjImagesLoaded){ pjToast('Aguarde as imagens carregarem.'); return; }
+  const data = pjCollectFormData();
+  data.title = (data.title || 'Sem título') + ' (cópia)';
+  data.status = '';
+  if(!data.date){ pjToast('Escolha uma data.'); return; }
+  try{
+    const ref = await window._fb.addDoc(pjPostsCollection(pjActiveWorkspaceId), data);
+    const col = window._fb.collection(window._fb.db,'calendarWorkspaces',pjActiveWorkspaceId,'posts',ref.id,'imagens');
+    for(let i=0;i<pjImages.length;i++){ await window._fb.addDoc(col, {data: pjImages[i].data, order: i}); }
+    pjPostsByWorkspace[pjActiveWorkspaceId] = [...pjPostsForActiveWorkspace(), {id: ref.id, ...data}];
+    pjRenderCalendar();
+    pjCloseModal();
+    pjOpenModal(ref.id, data.date);
+    pjToast('Post duplicado. Ajuste a data se precisar.');
+  }catch(err){ pjToast('Erro ao duplicar: ' + (err && err.code ? err.code : 'verifique a conexão')); }
 }
 async function pjHandleReviewAction(decision){
   if(!pjEditingId) return;
@@ -1053,6 +1324,7 @@ async function pjHandleReviewAction(decision){
 async function pjHandleDelete(){
   if(!pjEditingId) return;
   try{
+    await pjDeletePostImages(pjActiveWorkspaceId, pjEditingId);
     await window._fb.deleteDoc(window._fb.doc(window._fb.db,'calendarWorkspaces',pjActiveWorkspaceId,'posts',pjEditingId));
     pjPostsByWorkspace[pjActiveWorkspaceId] = pjPostsForActiveWorkspace().filter(p=>p.id!==pjEditingId);
     pjRenderCalendar(); pjCloseModal(); pjToast('Post excluído.');
@@ -1064,7 +1336,7 @@ async function pjHandleReset(){
   if(!ok) return;
   try{
     const snap = await window._fb.getDocs(pjPostsCollection(pjActiveWorkspaceId));
-    for(const d of snap.docs){ await window._fb.deleteDoc(d.ref); }
+    for(const d of snap.docs){ await pjDeletePostImages(pjActiveWorkspaceId, d.id); await window._fb.deleteDoc(d.ref); }
     pjPostsByWorkspace[pjActiveWorkspaceId] = [];
     pjRenderCalendar(); pjToast('Calendário limpo.');
   }catch(err){ pjToast('Erro ao limpar — verifique a conexão.'); }
@@ -1188,41 +1460,63 @@ window.initPlanejamento = async function(){
 
   document.getElementById('pjPrevBtn').addEventListener('click', ()=>{ pjViewDate = new Date(pjViewDate.getFullYear(), pjViewDate.getMonth()-1, 1); pjRenderCalendar(); });
   document.getElementById('pjNextBtn').addEventListener('click', ()=>{ pjViewDate = new Date(pjViewDate.getFullYear(), pjViewDate.getMonth()+1, 1); pjRenderCalendar(); });
+  document.getElementById('pjFilterType').addEventListener('change', (e)=>{ pjFilterType = e.target.value; pjRenderCalendar(); });
+  document.getElementById('pjFilterStatus').addEventListener('change', (e)=>{ pjFilterStatus = e.target.value; pjRenderCalendar(); });
+  document.getElementById('pjFilterClear').addEventListener('click', ()=>{ pjFilterType = ''; pjFilterStatus = ''; pjRenderCalendar(); });
+  const setMode = (m)=>{ pjViewMode = m; try{ localStorage.setItem('pj-view-mode', m); }catch(e){} pjRenderCalendar(); };
+  document.getElementById('pjViewCalBtn').addEventListener('click', ()=>setMode('cal'));
+  document.getElementById('pjViewListBtn').addEventListener('click', ()=>setMode('list'));
   document.getElementById('pjTodayBtn').addEventListener('click', ()=>{ pjViewDate = new Date(); pjRenderCalendar(); });
   document.getElementById('pjNewPostBtn').addEventListener('click', ()=>pjOpenModal(null, pjToKey(pjViewDate)));
   document.getElementById('pjCloseBtn').addEventListener('click', pjCloseModal);
   document.getElementById('pjOverlay').addEventListener('click', (e)=>{ if(e.target.id==='pjOverlay') pjCloseModal(); });
   document.getElementById('pjSaveBtn').addEventListener('click', pjHandleSave);
   document.getElementById('pjDeleteBtn').addEventListener('click', pjHandleDelete);
+  document.getElementById('pjDuplicateBtn').addEventListener('click', pjHandleDuplicate);
   document.getElementById('pjResetBtn').addEventListener('click', pjHandleReset);
   document.getElementById('pjApproveBtn').addEventListener('click', ()=>pjHandleReviewAction('aprovado'));
   document.getElementById('pjRequestChangesBtn').addEventListener('click', ()=>pjHandleReviewAction('ajuste'));
   document.getElementById('pjRejectBtn').addEventListener('click', ()=>pjHandleReviewAction('reprovado'));
-  document.getElementById('pjImage').addEventListener('input', (e)=>{
-    pjCurrentImage = e.target.value.trim();
-    document.getElementById('pjUploadHint').textContent = '';
-    pjUpdatePreview();
-  });
+  const addUrl = ()=>{
+    const inp = document.getElementById('pjImage'); const v = inp.value.trim();
+    if(!v) return;
+    if(!/^https?:\/\//i.test(v)){ pjToast('O link precisa começar com http:// ou https://'); return; }
+    if(pjAddImage(v)){ inp.value = ''; pjRenderCarousel(); }
+  };
+  document.getElementById('pjImage').addEventListener('keydown', (e)=>{ if(e.key === 'Enter'){ e.preventDefault(); addUrl(); } });
+  document.getElementById('pjImage').addEventListener('change', addUrl);
   document.getElementById('pjUploadBtn').addEventListener('click', ()=>document.getElementById('pjImageFile').click());
   document.getElementById('pjImageFile').addEventListener('change', async (e)=>{
-    const file = e.target.files[0];
-    if(!file) return;
+    const files = Array.from(e.target.files || []);
+    if(!files.length) return;
     const hint = document.getElementById('pjUploadHint');
     hint.textContent = 'Processando...';
-    try{
-      pjCurrentImage = await pjResizeAndEncode(file);
-      document.getElementById('pjImage').value = '';
-      const kb = Math.round(pjCurrentImage.length * 0.75 / 1024);
-      hint.textContent = `Imagem carregada (~${kb} KB)`;
-      pjUpdatePreview();
-    }catch(err){ hint.textContent = ''; pjToast('Não consegui processar essa imagem.'); }
+    let ok = 0;
+    for(const file of files){
+      try{
+        const data = await pjResizeAndEncode(file);
+        if(!pjAddImage(data)) break;
+        ok++;
+      }catch(err){ pjToast('Não consegui processar ' + file.name); }
+    }
+    e.target.value = '';
+    hint.textContent = ok ? (ok + (ok === 1 ? ' imagem adicionada' : ' imagens adicionadas')) : '';
+    pjRenderCarousel();
   });
-  document.getElementById('pjRemoveImgBtn').addEventListener('click', ()=>{
-    pjCurrentImage = '';
-    document.getElementById('pjImage').value = '';
-    document.getElementById('pjImageFile').value = '';
-    document.getElementById('pjUploadHint').textContent = '';
-    pjUpdatePreview();
+  document.getElementById('pjCarousel').addEventListener('scroll', pjUpdateCarouselCount);
+  (()=>{ let x0 = null; const lb = document.getElementById('pjLightbox');
+    lb.addEventListener('touchstart', (e)=>{ x0 = e.touches[0].clientX; }, {passive:true});
+    lb.addEventListener('touchend', (e)=>{ if(x0 === null) return; const dx = e.changedTouches[0].clientX - x0; x0 = null; if(Math.abs(dx) > 50) pjLbStep(dx < 0 ? 1 : -1); }, {passive:true});
+  })();
+  document.getElementById('pjLbClose').addEventListener('click', pjCloseLightbox);
+  document.getElementById('pjLbPrev').addEventListener('click', ()=>pjLbStep(-1));
+  document.getElementById('pjLbNext').addEventListener('click', ()=>pjLbStep(1));
+  document.getElementById('pjLightbox').addEventListener('click', (e)=>{ if(e.target.id === 'pjLightbox') pjCloseLightbox(); });
+  document.addEventListener('keydown', (e)=>{
+    if(!document.getElementById('pjLightbox').classList.contains('show')) return;
+    if(e.key === 'Escape') pjCloseLightbox();
+    if(e.key === 'ArrowLeft') pjLbStep(-1);
+    if(e.key === 'ArrowRight') pjLbStep(1);
   });
 };
 </script>
