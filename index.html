@@ -27,12 +27,6 @@
     --t4:#4E6A8C; --t4-soft:#E1E7EF;
     --t5:#7A5C3E; --t5-soft:#EFE6DA;
     --t6:#8A4A5A; --t6-soft:#F0DEE3;
-    /* categorias de conteúdo (objetivo do post, separado do formato) */
-    --c1:#3E6B5C; --c1-soft:#DEE9E3;
-    --c2:#A8536B; --c2-soft:#F0DEE3;
-    --c3:#B4862E; --c3-soft:#F3EAD2;
-    --c4:#3E5C8C; --c4-soft:#DEE4EF;
-    --c5:#6B6355; --c5-soft:#EAE6DE;
   }
   *{box-sizing:border-box;}
   body{
@@ -161,7 +155,6 @@
   .pj-chip{font-size:11.5px;padding:3px 6px;border-radius:5px;display:flex;align-items:center;gap:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3;}
   .pj-chip .pj-dot{flex-shrink:0;}
   .pj-chip-more{font-family:'DM Mono',monospace;font-size:10.5px;color:var(--ink-soft);padding-left:2px;}
-  .pj-cat-mark{width:7px;height:7px;display:inline-block;flex-shrink:0;border-radius:2px;}
   .pj-add-hint{position:absolute;top:6px;right:8px;font-size:16px;color:var(--line);opacity:0;}
   .pj-cell:hover .pj-add-hint{opacity:1;color:var(--ink-soft);}
   body.pj-review .pj-add-hint{display:none;}
@@ -189,9 +182,6 @@
   .pj-status-select{display:flex;flex-wrap:wrap;gap:7px;}
   .pj-status-select button{font-family:'DM Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.05em;padding:6px 10px;border-radius:5px;border:1px solid var(--line);background:#fff;cursor:pointer;color:var(--ink-soft);}
   .pj-status-select button.active{background:var(--ink);border-color:var(--ink);color:#fff;}
-  .pj-checklist{display:flex;flex-direction:column;gap:8px;}
-  .pj-checklist label{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink);cursor:pointer;font-family:'DM Sans',sans-serif;text-transform:none;letter-spacing:0;}
-  .pj-checklist input{width:15px;height:15px;accent-color:var(--yellow-deep);}
   .pj-preview{margin-top:8px;border:1px dashed var(--line);border-radius:7px;overflow:hidden;max-height:160px;display:none;position:relative;}
   .pj-preview img{width:100%;display:block;object-fit:cover;max-height:160px;}
   .pj-preview .pj-remove-img{position:absolute;top:6px;right:6px;background:rgba(43,43,43,0.75);color:#fff;border:none;border-radius:5px;width:24px;height:24px;cursor:pointer;font-size:13px;}
@@ -306,7 +296,6 @@
     <div class="pj-ws-tabs" id="pjWsTabs"></div>
     <div class="pj-link-row" id="pjLinkRow"></div>
     <div class="pj-legend" id="pjLegend"></div>
-    <div class="pj-legend" id="pjCategoryLegend" style="margin-top:-8px;"></div>
     <div class="pj-legend" id="pjReviewLegend" style="margin-top:-8px;"></div>
 
     <div class="pj-weekdays">
@@ -334,7 +323,6 @@
           <div>
             <div class="pj-field"><label>Data</label><input type="date" id="pjDate"></div>
             <div class="pj-field"><label>Tipo de post</label><div class="pj-chip-select" id="pjTypeSelect"></div></div>
-            <div class="pj-field"><label>Categoria de conteúdo</label><div class="pj-chip-select" id="pjCategorySelect"></div></div>
             <div class="pj-field"><label>Status</label><div class="pj-status-select" id="pjStatusSelect"></div></div>
             <div class="pj-field"><label>Link (referência, drive, agendamento)</label><input type="url" id="pjLink" placeholder="https://"></div>
             <div class="pj-field">
@@ -350,10 +338,6 @@
                 <button type="button" class="pj-remove-img" id="pjRemoveImgBtn">✕</button>
                 <img id="pjPreviewImg" src="" alt="">
               </div>
-            </div>
-            <div class="pj-field">
-              <label>Checklist antes de publicar</label>
-              <div class="pj-checklist" id="pjChecklist"></div>
             </div>
           </div>
 
@@ -528,13 +512,6 @@ const PJ_TYPES = [
   {id:'carrossel', label:'Carrossel', color:'var(--t4)', soft:'var(--t4-soft)'},
 ];
 const PJ_STATUSES = ['Ideia','Rascunho','Aprovado','Agendado','Publicado'];
-const PJ_CATEGORIES = [
-  {id:'educativo', label:'Educativo', color:'var(--c1)', soft:'var(--c1-soft)'},
-  {id:'humanizacao', label:'Humanização', color:'var(--c2)', soft:'var(--c2-soft)'},
-  {id:'entretenimento', label:'Entretenimento', color:'var(--c3)', soft:'var(--c3-soft)'},
-  {id:'autoridade', label:'Autoridade', color:'var(--c4)', soft:'var(--c4-soft)'},
-  {id:'institucional', label:'Institucional', color:'var(--c5)', soft:'var(--c5-soft)'},
-];
 const PJ_DECISIONS = {
   aprovado:  {emoji:'✅', label:'Aprovado', status:'Aprovado'},
   ajuste:    {emoji:'⚠️', label:'Ajuste solicitado', status:'Rascunho'},
@@ -543,7 +520,6 @@ const PJ_DECISIONS = {
 const PJ_ALLOWED_TAGS = ['B','I','U','STRONG','EM','BR','DIV','P','SPAN'];
 const PJ_REVIEWER_KEY = 'pj-reviewer-name';
 let pjReviewerName = '';
-const PJ_CHECKLIST_ITEMS = ['Legenda revisada','Hashtags incluídas','Link da bio atualizado (se aplicável)','Arte aprovada pelo cliente'];
 const PJ_MONTHS = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 const PJ_REVIEW_MODE = new URLSearchParams(location.search).get('modo') === 'revisao';
 const PJ_REVIEW_CLIENT_ID = new URLSearchParams(location.search).get('cliente') || '';
@@ -557,13 +533,11 @@ let pjPostsByWorkspace = {};
 let pjViewDate = new Date();
 let pjEditingId = null;
 let pjSelectedType = PJ_TYPES[0].id;
-let pjSelectedCategory = null;
 let pjSelectedStatus = PJ_STATUSES[0];
 let pjCurrentImage = '';
 let pjInitialized = false;
 
 function pjTypeOf(id){ return PJ_TYPES.find(t=>t.id===id) || PJ_TYPES[0]; }
-function pjCategoryOf(id){ return PJ_CATEGORIES.find(c=>c.id===id) || null; }
 function pjPad(n){ return String(n).padStart(2,'0'); }
 function pjToKey(d){ return d.getFullYear()+'-'+pjPad(d.getMonth()+1)+'-'+pjPad(d.getDate()); }
 function pjSlug(s){ return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'') || ('c'+Date.now()); }
@@ -748,7 +722,6 @@ async function pjEditWorkspace(id){
 // ── LEGEND & CALENDAR ────────────────────────────────────────────────────
 function pjRenderLegend(){
   document.getElementById('pjLegend').innerHTML = PJ_TYPES.map(t=>`<span><span class="pj-dot" style="background:${t.color}"></span>${t.label}</span>`).join('');
-  document.getElementById('pjCategoryLegend').innerHTML = PJ_CATEGORIES.map(c=>`<span><span class="pj-cat-mark" style="background:${c.color}"></span>${c.label}</span>`).join('');
   document.getElementById('pjReviewLegend').innerHTML = Object.values(PJ_DECISIONS).map(d=>`<span>${d.emoji} ${d.label}</span>`).join('');
 }
 
@@ -778,14 +751,12 @@ function pjRenderCalendar(){
     const chipsEl = cell.querySelector('.pj-chips');
     dayPosts.slice(0,3).forEach(p=>{
       const t = pjTypeOf(p.type);
-      const cat = p.category ? pjCategoryOf(p.category) : null;
       const chip = document.createElement('div');
       chip.className = 'pj-chip';
       chip.style.background = t.soft; chip.style.color = t.color;
-      const catMark = cat ? `<span class="pj-cat-mark" style="background:${cat.color}" title="${cat.label}"></span>` : '';
       const rv = pjLastReview(p); const rvInfo = rv ? PJ_DECISIONS[rv.decision] : null;
       const revMark = rvInfo ? `<span title="${rvInfo.label} por ${pjEscapeAttr(rv.by)}">${rvInfo.emoji}</span>` : '';
-      chip.innerHTML = `${revMark}<span class="pj-dot" style="background:${t.color}"></span>${catMark}<b>${t.label}:</b> ${p.title || '(sem título)'}${!pjRteEmpty(p.commentHtml) || p.comment ? '<span title="Tem comentário">💬</span>' : ''}`;
+      chip.innerHTML = `${revMark}<span class="pj-dot" style="background:${t.color}"></span><b>${t.label}:</b> ${p.title || '(sem título)'}${!pjRteEmpty(p.commentHtml) || p.comment ? '<span title="Tem comentário">💬</span>' : ''}`;
       chip.addEventListener('click', async (e)=>{ e.stopPropagation(); await pjRefreshPost(p.id); pjOpenModal(p.id, key); });
       chipsEl.appendChild(chip);
     });
@@ -809,18 +780,6 @@ function pjRenderTypeSelect(){
     el.appendChild(btn);
   });
 }
-function pjRenderCategorySelect(){
-  const el = document.getElementById('pjCategorySelect'); el.innerHTML = '';
-  PJ_CATEGORIES.forEach(c=>{
-    const btn = document.createElement('button'); btn.type = 'button';
-    btn.innerHTML = `<span class="pj-dot" style="background:${c.color}"></span>${c.label}`;
-    const isActive = c.id === pjSelectedCategory;
-    if(isActive){ btn.classList.add('active'); btn.style.background = c.soft; }
-    if(PJ_REVIEW_MODE){ btn.style.opacity = isActive ? '1' : '.35'; btn.style.cursor = 'default'; }
-    else { btn.addEventListener('click', ()=>{ pjSelectedCategory = isActive ? null : c.id; pjRenderCategorySelect(); }); }
-    el.appendChild(btn);
-  });
-}
 function pjRenderStatusSelect(){
   const el = document.getElementById('pjStatusSelect'); el.innerHTML = '';
   PJ_STATUSES.forEach(s=>{
@@ -830,22 +789,6 @@ function pjRenderStatusSelect(){
     else { btn.addEventListener('click', ()=>{ pjSelectedStatus = s; pjRenderStatusSelect(); }); }
     el.appendChild(btn);
   });
-}
-function pjRenderChecklist(saved){
-  const el = document.getElementById('pjChecklist'); el.innerHTML = '';
-  const savedArr = saved || [];
-  PJ_CHECKLIST_ITEMS.forEach((item, idx)=>{
-    const label = document.createElement('label');
-    const input = document.createElement('input');
-    input.type = 'checkbox'; input.checked = savedArr.includes(idx); input.disabled = PJ_REVIEW_MODE;
-    input.dataset.idx = idx;
-    label.appendChild(input);
-    label.appendChild(document.createTextNode(item));
-    el.appendChild(label);
-  });
-}
-function pjGetChecklistValue(){
-  return Array.from(document.querySelectorAll('#pjChecklist input:checked')).map(i => parseInt(i.dataset.idx));
 }
 function pjUpdateTape(){ document.getElementById('pjTape').style.background = pjTypeOf(pjSelectedType).color; }
 
@@ -867,7 +810,6 @@ function pjOpenModal(id, presetDateKey, presetTitle){
   pjEditingId = id;
   const overlay = document.getElementById('pjOverlay');
   const deleteBtn = document.getElementById('pjDeleteBtn');
-  let checklistSaved = [];
   if(id){
     const p = pjPostsForActiveWorkspace().find(x=>x.id===id);
     document.getElementById('pjPanelTitle').textContent = PJ_REVIEW_MODE ? 'Revisar post' : 'Editar post';
@@ -877,12 +819,10 @@ function pjOpenModal(id, presetDateKey, presetTitle){
     pjSetRte('pjCaption', p.captionHtml, p.caption);
     document.getElementById('pjLink').value = p.link || '';
     pjSetRte('pjComment', p.commentHtml, p.comment);
-    checklistSaved = p.checklist || [];
     pjRenderReviewLog(p);
     pjCurrentImage = p.image || '';
     document.getElementById('pjImage').value = pjCurrentImage.startsWith('data:') ? '' : pjCurrentImage;
     pjSelectedType = p.type || PJ_TYPES[0].id;
-    pjSelectedCategory = p.category || null;
     pjSelectedStatus = p.status || PJ_STATUSES[0];
     deleteBtn.style.display = PJ_REVIEW_MODE ? 'none' : 'inline-block';
   } else {
@@ -896,7 +836,6 @@ function pjOpenModal(id, presetDateKey, presetTitle){
     pjCurrentImage = '';
     document.getElementById('pjImage').value = '';
     pjSelectedType = PJ_TYPES[0].id;
-    pjSelectedCategory = null;
     pjRenderReviewLog(null);
     pjSelectedStatus = PJ_STATUSES[0];
     deleteBtn.style.display = 'none';
@@ -914,7 +853,7 @@ function pjOpenModal(id, presetDateKey, presetTitle){
   document.getElementById('pjEditorFooter').style.display = locked ? 'none' : 'flex';
   document.getElementById('pjReviewFooter').style.display = locked ? 'flex' : 'none';
 
-  pjRenderTypeSelect(); pjRenderCategorySelect(); pjRenderStatusSelect(); pjRenderChecklist(checklistSaved); pjUpdateTape(); pjUpdatePreview();
+  pjRenderTypeSelect(); pjRenderStatusSelect(); pjUpdateTape(); pjUpdatePreview();
   overlay.classList.add('show');
 }
 function pjCloseModal(){ document.getElementById('pjOverlay').classList.remove('show'); pjEditingId = null; }
@@ -955,13 +894,11 @@ async function pjHandleSave(){
   const data = {
     title, date,
     type: pjSelectedType,
-    category: pjSelectedCategory,
     status: pjSelectedStatus,
     briefHtml: pjGetRte('pjBrief'),
     captionHtml: pjGetRte('pjCaption'),
     link: document.getElementById('pjLink').value.trim(),
     commentHtml: pjGetRte('pjComment'),
-    checklist: pjGetChecklistValue(),
     image: pjCurrentImage,
   };
   try{
