@@ -27,6 +27,12 @@
     --t4:#4E6A8C; --t4-soft:#E1E7EF;
     --t5:#7A5C3E; --t5-soft:#EFE6DA;
     --t6:#8A4A5A; --t6-soft:#F0DEE3;
+    /* categorias de conteúdo (objetivo do post, separado do formato) */
+    --c1:#3E6B5C; --c1-soft:#DEE9E3;
+    --c2:#A8536B; --c2-soft:#F0DEE3;
+    --c3:#B4862E; --c3-soft:#F3EAD2;
+    --c4:#3E5C8C; --c4-soft:#DEE4EF;
+    --c5:#6B6355; --c5-soft:#EAE6DE;
   }
   *{box-sizing:border-box;}
   body{
@@ -155,6 +161,7 @@
   .pj-chip{font-size:11.5px;padding:3px 6px;border-radius:5px;display:flex;align-items:center;gap:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3;}
   .pj-chip .pj-dot{flex-shrink:0;}
   .pj-chip-more{font-family:'DM Mono',monospace;font-size:10.5px;color:var(--ink-soft);padding-left:2px;}
+  .pj-cat-mark{width:7px;height:7px;display:inline-block;flex-shrink:0;border-radius:2px;}
   .pj-add-hint{position:absolute;top:6px;right:8px;font-size:16px;color:var(--line);opacity:0;}
   .pj-cell:hover .pj-add-hint{opacity:1;color:var(--ink-soft);}
   body.pj-review .pj-add-hint{display:none;}
@@ -219,6 +226,14 @@
   .pj-btn-changes{flex:1;background:none;border:1px solid var(--yellow-deep);color:var(--yellow-deep);border-radius:8px;padding:11px;font-weight:700;font-size:14px;cursor:pointer;}
 
   .pj-review-banner{font-family:'DM Mono',monospace;font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;background:var(--ink);color:var(--yellow);padding:9px 14px;border-radius:7px;margin-bottom:18px;text-align:center;}
+  .pj-banner-link{background:none;border:none;color:var(--yellow);text-decoration:underline;font:inherit;text-transform:inherit;letter-spacing:inherit;cursor:pointer;padding:0;margin-left:6px;}
+  .pj-btn-reject{flex:1;background:none;border:1px solid #b04a4a;color:#b04a4a;border-radius:8px;padding:11px;font-weight:700;font-size:14px;cursor:pointer;}
+  .pj-btn-reject:hover{background:#f6e3e3;}
+  .pj-review-log{display:flex;flex-direction:column;gap:8px;}
+  .pj-review-entry{background:#fff;border:1px solid var(--line);border-radius:8px;padding:9px 11px;font-size:13px;}
+  .pj-review-entry-head{display:flex;flex-wrap:wrap;gap:6px;align-items:baseline;}
+  .pj-review-entry-head span{font-family:'DM Mono',monospace;font-size:11px;color:#777;}
+  .pj-review-entry-comment{margin-top:5px;color:#444;white-space:pre-wrap;}
   .pj-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 18px;border-radius:8px;font-size:13px;opacity:0;pointer-events:none;transition:opacity .2s, transform .2s;z-index:300;}
   .pj-toast.show{opacity:1;transform:translateX(-50%) translateY(-4px);}
 
@@ -291,6 +306,8 @@
     <div class="pj-ws-tabs" id="pjWsTabs"></div>
     <div class="pj-link-row" id="pjLinkRow"></div>
     <div class="pj-legend" id="pjLegend"></div>
+    <div class="pj-legend" id="pjCategoryLegend" style="margin-top:-8px;"></div>
+    <div class="pj-legend" id="pjReviewLegend" style="margin-top:-8px;"></div>
 
     <div class="pj-weekdays">
       <div>Dom</div><div>Seg</div><div>Ter</div><div>Qua</div><div>Qui</div><div>Sex</div><div>Sáb</div>
@@ -317,6 +334,7 @@
           <div>
             <div class="pj-field"><label>Data</label><input type="date" id="pjDate"></div>
             <div class="pj-field"><label>Tipo de post</label><div class="pj-chip-select" id="pjTypeSelect"></div></div>
+            <div class="pj-field"><label>Categoria de conteúdo</label><div class="pj-chip-select" id="pjCategorySelect"></div></div>
             <div class="pj-field"><label>Status</label><div class="pj-status-select" id="pjStatusSelect"></div></div>
             <div class="pj-field"><label>Link (referência, drive, agendamento)</label><input type="url" id="pjLink" placeholder="https://"></div>
             <div class="pj-field">
@@ -360,7 +378,8 @@
               <div class="pj-rte-editable" id="pjCaption" contenteditable="true" data-placeholder="Legenda pra publicar"></div>
             </div>
 
-            <div class="pj-field">
+            <div class="pj-field" id="pjReviewLogField" style="display:none;"><label>Histórico de revisão</label><div class="pj-review-log" id="pjReviewLog"></div></div>
+              <div class="pj-field">
               <label id="pjCommentLabel">Comentário</label>
               <div class="pj-rte-toolbar">
                 <button type="button" class="pj-rte-btn b" data-cmd="bold" data-target="pjComment">B</button>
@@ -379,12 +398,21 @@
       </div>
       <div class="pj-panel-footer" id="pjReviewFooter" style="display:none;">
         <button class="pj-btn-changes" id="pjRequestChangesBtn">Pedir ajuste</button>
+        <button class="pj-btn-reject" id="pjRejectBtn">Reprovar</button>
         <button class="pj-btn-approve" id="pjApproveBtn">Aprovar</button>
       </div>
     </div>
   </div>
 
   <div class="pj-toast" id="pjToast"></div>
+
+  <div class="pj-dialog-overlay" id="pjNameGate" style="z-index:400;">
+    <div class="pj-dialog-box">
+      <p class="pj-dialog-message"><b>Olá!</b> Para registrar suas aprovações e pedidos de ajuste, informe seu nome.</p>
+      <input type="text" id="pjNameInput" class="pj-dialog-input" placeholder="Seu nome" maxlength="60" style="font-family:'DM Sans',sans-serif;">
+      <div class="pj-dialog-actions"><button class="pj-dialog-btn-primary" id="pjNameOkBtn">Continuar</button></div>
+    </div>
+  </div>
 
   <div class="pj-dialog-overlay" id="pjDialogOverlay">
     <div class="pj-dialog-box">
@@ -500,6 +528,21 @@ const PJ_TYPES = [
   {id:'carrossel', label:'Carrossel', color:'var(--t4)', soft:'var(--t4-soft)'},
 ];
 const PJ_STATUSES = ['Ideia','Rascunho','Aprovado','Agendado','Publicado'];
+const PJ_CATEGORIES = [
+  {id:'educativo', label:'Educativo', color:'var(--c1)', soft:'var(--c1-soft)'},
+  {id:'humanizacao', label:'Humanização', color:'var(--c2)', soft:'var(--c2-soft)'},
+  {id:'entretenimento', label:'Entretenimento', color:'var(--c3)', soft:'var(--c3-soft)'},
+  {id:'autoridade', label:'Autoridade', color:'var(--c4)', soft:'var(--c4-soft)'},
+  {id:'institucional', label:'Institucional', color:'var(--c5)', soft:'var(--c5-soft)'},
+];
+const PJ_DECISIONS = {
+  aprovado:  {emoji:'✅', label:'Aprovado', status:'Aprovado'},
+  ajuste:    {emoji:'⚠️', label:'Ajuste solicitado', status:'Rascunho'},
+  reprovado: {emoji:'❌', label:'Reprovado', status:'Rascunho'},
+};
+const PJ_ALLOWED_TAGS = ['B','I','U','STRONG','EM','BR','DIV','P','SPAN'];
+const PJ_REVIEWER_KEY = 'pj-reviewer-name';
+let pjReviewerName = '';
 const PJ_CHECKLIST_ITEMS = ['Legenda revisada','Hashtags incluídas','Link da bio atualizado (se aplicável)','Arte aprovada pelo cliente'];
 const PJ_MONTHS = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 const PJ_REVIEW_MODE = new URLSearchParams(location.search).get('modo') === 'revisao';
@@ -514,11 +557,13 @@ let pjPostsByWorkspace = {};
 let pjViewDate = new Date();
 let pjEditingId = null;
 let pjSelectedType = PJ_TYPES[0].id;
+let pjSelectedCategory = null;
 let pjSelectedStatus = PJ_STATUSES[0];
 let pjCurrentImage = '';
 let pjInitialized = false;
 
 function pjTypeOf(id){ return PJ_TYPES.find(t=>t.id===id) || PJ_TYPES[0]; }
+function pjCategoryOf(id){ return PJ_CATEGORIES.find(c=>c.id===id) || null; }
 function pjPad(n){ return String(n).padStart(2,'0'); }
 function pjToKey(d){ return d.getFullYear()+'-'+pjPad(d.getMonth()+1)+'-'+pjPad(d.getDate()); }
 function pjSlug(s){ return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'') || ('c'+Date.now()); }
@@ -703,6 +748,8 @@ async function pjEditWorkspace(id){
 // ── LEGEND & CALENDAR ────────────────────────────────────────────────────
 function pjRenderLegend(){
   document.getElementById('pjLegend').innerHTML = PJ_TYPES.map(t=>`<span><span class="pj-dot" style="background:${t.color}"></span>${t.label}</span>`).join('');
+  document.getElementById('pjCategoryLegend').innerHTML = PJ_CATEGORIES.map(c=>`<span><span class="pj-cat-mark" style="background:${c.color}"></span>${c.label}</span>`).join('');
+  document.getElementById('pjReviewLegend').innerHTML = Object.values(PJ_DECISIONS).map(d=>`<span>${d.emoji} ${d.label}</span>`).join('');
 }
 
 function pjRenderCalendar(){
@@ -731,11 +778,15 @@ function pjRenderCalendar(){
     const chipsEl = cell.querySelector('.pj-chips');
     dayPosts.slice(0,3).forEach(p=>{
       const t = pjTypeOf(p.type);
+      const cat = p.category ? pjCategoryOf(p.category) : null;
       const chip = document.createElement('div');
       chip.className = 'pj-chip';
       chip.style.background = t.soft; chip.style.color = t.color;
-      chip.innerHTML = `<span class="pj-dot" style="background:${t.color}"></span><b>${t.label}:</b> ${p.title || '(sem título)'}${!pjRteEmpty(p.commentHtml) || p.comment ? '<span title="Tem comentário">💬</span>' : ''}`;
-      chip.addEventListener('click', (e)=>{ e.stopPropagation(); pjOpenModal(p.id, key); });
+      const catMark = cat ? `<span class="pj-cat-mark" style="background:${cat.color}" title="${cat.label}"></span>` : '';
+      const rv = pjLastReview(p); const rvInfo = rv ? PJ_DECISIONS[rv.decision] : null;
+      const revMark = rvInfo ? `<span title="${rvInfo.label} por ${pjEscapeAttr(rv.by)}">${rvInfo.emoji}</span>` : '';
+      chip.innerHTML = `${revMark}<span class="pj-dot" style="background:${t.color}"></span>${catMark}<b>${t.label}:</b> ${p.title || '(sem título)'}${!pjRteEmpty(p.commentHtml) || p.comment ? '<span title="Tem comentário">💬</span>' : ''}`;
+      chip.addEventListener('click', async (e)=>{ e.stopPropagation(); await pjRefreshPost(p.id); pjOpenModal(p.id, key); });
       chipsEl.appendChild(chip);
     });
     if(dayPosts.length > 3){
@@ -755,6 +806,18 @@ function pjRenderTypeSelect(){
     if(t.id === pjSelectedType){ btn.classList.add('active'); btn.style.background = t.soft; }
     if(PJ_REVIEW_MODE){ btn.style.opacity = t.id === pjSelectedType ? '1' : '.35'; btn.style.cursor = 'default'; }
     else { btn.addEventListener('click', ()=>{ pjSelectedType = t.id; pjRenderTypeSelect(); pjUpdateTape(); }); }
+    el.appendChild(btn);
+  });
+}
+function pjRenderCategorySelect(){
+  const el = document.getElementById('pjCategorySelect'); el.innerHTML = '';
+  PJ_CATEGORIES.forEach(c=>{
+    const btn = document.createElement('button'); btn.type = 'button';
+    btn.innerHTML = `<span class="pj-dot" style="background:${c.color}"></span>${c.label}`;
+    const isActive = c.id === pjSelectedCategory;
+    if(isActive){ btn.classList.add('active'); btn.style.background = c.soft; }
+    if(PJ_REVIEW_MODE){ btn.style.opacity = isActive ? '1' : '.35'; btn.style.cursor = 'default'; }
+    else { btn.addEventListener('click', ()=>{ pjSelectedCategory = isActive ? null : c.id; pjRenderCategorySelect(); }); }
     el.appendChild(btn);
   });
 }
@@ -791,7 +854,7 @@ function pjEscapeHtml(s){
   return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
 }
 function pjSetRte(id, html, plainFallback){
-  document.getElementById(id).innerHTML = html || (plainFallback ? pjEscapeHtml(plainFallback) : '');
+  document.getElementById(id).innerHTML = html ? pjSanitizeHtml(html) : (plainFallback ? pjEscapeHtml(plainFallback) : '');
 }
 function pjGetRte(id){
   return document.getElementById(id).innerHTML.trim();
@@ -815,9 +878,11 @@ function pjOpenModal(id, presetDateKey, presetTitle){
     document.getElementById('pjLink').value = p.link || '';
     pjSetRte('pjComment', p.commentHtml, p.comment);
     checklistSaved = p.checklist || [];
+    pjRenderReviewLog(p);
     pjCurrentImage = p.image || '';
     document.getElementById('pjImage').value = pjCurrentImage.startsWith('data:') ? '' : pjCurrentImage;
     pjSelectedType = p.type || PJ_TYPES[0].id;
+    pjSelectedCategory = p.category || null;
     pjSelectedStatus = p.status || PJ_STATUSES[0];
     deleteBtn.style.display = PJ_REVIEW_MODE ? 'none' : 'inline-block';
   } else {
@@ -831,6 +896,8 @@ function pjOpenModal(id, presetDateKey, presetTitle){
     pjCurrentImage = '';
     document.getElementById('pjImage').value = '';
     pjSelectedType = PJ_TYPES[0].id;
+    pjSelectedCategory = null;
+    pjRenderReviewLog(null);
     pjSelectedStatus = PJ_STATUSES[0];
     deleteBtn.style.display = 'none';
   }
@@ -847,7 +914,7 @@ function pjOpenModal(id, presetDateKey, presetTitle){
   document.getElementById('pjEditorFooter').style.display = locked ? 'none' : 'flex';
   document.getElementById('pjReviewFooter').style.display = locked ? 'flex' : 'none';
 
-  pjRenderTypeSelect(); pjRenderStatusSelect(); pjRenderChecklist(checklistSaved); pjUpdateTape(); pjUpdatePreview();
+  pjRenderTypeSelect(); pjRenderCategorySelect(); pjRenderStatusSelect(); pjRenderChecklist(checklistSaved); pjUpdateTape(); pjUpdatePreview();
   overlay.classList.add('show');
 }
 function pjCloseModal(){ document.getElementById('pjOverlay').classList.remove('show'); pjEditingId = null; }
@@ -888,6 +955,7 @@ async function pjHandleSave(){
   const data = {
     title, date,
     type: pjSelectedType,
+    category: pjSelectedCategory,
     status: pjSelectedStatus,
     briefHtml: pjGetRte('pjBrief'),
     captionHtml: pjGetRte('pjCaption'),
@@ -898,8 +966,8 @@ async function pjHandleSave(){
   };
   try{
     if(pjEditingId){
-      await window._fb.setDoc(window._fb.doc(window._fb.db,'calendarWorkspaces',pjActiveWorkspaceId,'posts',pjEditingId), data);
-      pjPostsByWorkspace[pjActiveWorkspaceId] = pjPostsForActiveWorkspace().map(p=>p.id===pjEditingId ? {id:pjEditingId, ...data} : p);
+      await window._fb.setDoc(window._fb.doc(window._fb.db,'calendarWorkspaces',pjActiveWorkspaceId,'posts',pjEditingId), data, {merge:true});
+      pjPostsByWorkspace[pjActiveWorkspaceId] = pjPostsForActiveWorkspace().map(p=>p.id===pjEditingId ? {...p, ...data} : p);
     } else {
       const ref = await window._fb.addDoc(pjPostsCollection(pjActiveWorkspaceId), data);
       pjPostsByWorkspace[pjActiveWorkspaceId] = [...pjPostsForActiveWorkspace(), {id: ref.id, ...data}];
@@ -907,15 +975,23 @@ async function pjHandleSave(){
     pjRenderCalendar(); pjCloseModal(); pjToast('Post salvo.');
   }catch(err){ pjToast('Erro ao salvar — verifique a conexão.'); }
 }
-async function pjHandleReviewAction(newStatus){
+async function pjHandleReviewAction(decision){
   if(!pjEditingId) return;
-  const commentHtml = pjGetRte('pjComment');
+  const info = PJ_DECISIONS[decision]; if(!info) return;
+  if(!pjReviewerName){ pjShowNameGate(); return; }
+  const commentHtml = pjSanitizeHtml(pjGetRte('pjComment'));
+  const commentText = (document.getElementById('pjComment').innerText || '').trim().slice(0, 500);
+  const ref = window._fb.doc(window._fb.db,'calendarWorkspaces',pjActiveWorkspaceId,'posts',pjEditingId);
   try{
-    await window._fb.updateDoc(window._fb.doc(window._fb.db,'calendarWorkspaces',pjActiveWorkspaceId,'posts',pjEditingId), {status:newStatus, commentHtml});
-    pjPostsByWorkspace[pjActiveWorkspaceId] = pjPostsForActiveWorkspace().map(p=>p.id===pjEditingId ? {...p, status:newStatus, commentHtml} : p);
+    const snap = await window._fb.getDoc(ref);
+    const current = snap.exists() ? (snap.data().reviewLog || []) : [];
+    const entry = {decision, by: pjReviewerName, at: new Date().toISOString(), comment: commentText};
+    const reviewLog = [...current, entry];
+    await window._fb.updateDoc(ref, {status: info.status, commentHtml, reviewLog});
+    pjPostsByWorkspace[pjActiveWorkspaceId] = pjPostsForActiveWorkspace().map(p=>p.id===pjEditingId ? {...p, status: info.status, commentHtml, reviewLog} : p);
     pjRenderCalendar(); pjCloseModal();
-    pjToast(newStatus === 'Aprovado' ? 'Post aprovado.' : 'Ajuste solicitado.');
-  }catch(err){ pjToast('Erro ao salvar — verifique a conexão.'); }
+    pjToast(info.emoji + ' ' + info.label + '.');
+  }catch(err){ pjToast('Erro ao salvar: ' + (err && err.code ? err.code : 'verifique a conexão')); }
 }
 async function pjHandleDelete(){
   if(!pjEditingId) return;
@@ -935,6 +1011,88 @@ async function pjHandleReset(){
     pjPostsByWorkspace[pjActiveWorkspaceId] = [];
     pjRenderCalendar(); pjToast('Calendário limpo.');
   }catch(err){ pjToast('Erro ao limpar — verifique a conexão.'); }
+}
+
+function pjEscapeAttr(v){
+  return String(v == null ? '' : v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+function pjSanitizeHtml(html){
+  const doc = new DOMParser().parseFromString('<body>' + String(html || '') + '</body>', 'text/html');
+  const clean = (node)=>{
+    Array.from(node.childNodes).forEach(ch=>{
+      if(ch.nodeType === 3) return;
+      if(ch.nodeType !== 1){ ch.remove(); return; }
+      if(['SCRIPT','STYLE','IFRAME','OBJECT','EMBED','LINK','META'].includes(ch.tagName)){ ch.remove(); return; }
+      clean(ch);
+      if(PJ_ALLOWED_TAGS.includes(ch.tagName)){
+        Array.from(ch.attributes).forEach(a=>ch.removeAttribute(a.name));
+      } else {
+        while(ch.firstChild) node.insertBefore(ch.firstChild, ch);
+        ch.remove();
+      }
+    });
+  };
+  clean(doc.body);
+  return doc.body.innerHTML;
+}
+function pjLastReview(p){
+  const log = p && Array.isArray(p.reviewLog) ? p.reviewLog : [];
+  return log.length ? log[log.length-1] : null;
+}
+function pjFmtDateTime(iso){
+  try{ return new Date(iso).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'}); }catch(e){ return ''; }
+}
+function pjRenderReviewLog(p){
+  const field = document.getElementById('pjReviewLogField');
+  const el = document.getElementById('pjReviewLog');
+  const log = p && Array.isArray(p.reviewLog) ? p.reviewLog : [];
+  if(!log.length){ field.style.display = 'none'; el.innerHTML = ''; return; }
+  field.style.display = 'block';
+  el.innerHTML = log.slice().reverse().map(e=>{
+    const info = PJ_DECISIONS[e.decision] || {emoji:'', label:String(e.decision || '')};
+    const comment = e.comment ? `<div class="pj-review-entry-comment">${pjEscapeAttr(e.comment)}</div>` : '';
+    return `<div class="pj-review-entry"><div class="pj-review-entry-head">${info.emoji} <b>${pjEscapeAttr(info.label)}</b> por ${pjEscapeAttr(e.by)} <span>${pjEscapeAttr(pjFmtDateTime(e.at))}</span></div>${comment}</div>`;
+  }).join('');
+}
+async function pjRefreshPost(id){
+  try{
+    const snap = await window._fb.getDoc(window._fb.doc(window._fb.db,'calendarWorkspaces',pjActiveWorkspaceId,'posts',id));
+    if(snap.exists()){
+      pjPostsByWorkspace[pjActiveWorkspaceId] = pjPostsForActiveWorkspace().map(p=>p.id===id ? {id, ...snap.data()} : p);
+    }
+  }catch(e){}
+}
+function pjLoadReviewerName(){
+  try{ return (localStorage.getItem(PJ_REVIEWER_KEY) || '').slice(0,60); }catch(e){ return ''; }
+}
+function pjSaveReviewerName(n){
+  try{ localStorage.setItem(PJ_REVIEWER_KEY, n); }catch(e){}
+}
+function pjShowNameGate(){
+  const input = document.getElementById('pjNameInput');
+  input.value = pjReviewerName || '';
+  document.getElementById('pjNameGate').classList.add('show');
+  setTimeout(()=>input.focus(), 50);
+}
+function pjConfirmName(){
+  const n = document.getElementById('pjNameInput').value.trim().slice(0,60);
+  if(!n){ document.getElementById('pjNameInput').focus(); return; }
+  pjReviewerName = n; pjSaveReviewerName(n);
+  document.getElementById('pjNameGate').classList.remove('show');
+  pjUpdateReviewBanner();
+}
+function pjUpdateReviewBanner(){
+  const banner = document.getElementById('pjReviewBanner');
+  banner.style.display = 'block';
+  if(!PJ_REVIEW_CLIENT_ID){
+    banner.textContent = 'Este link de revisão não está associado a um cliente. Peça um link atualizado.';
+    return;
+  }
+  banner.textContent = 'Modo revisão — ' + (PJ_REVIEW_CLIENT_NAME || PJ_REVIEW_CLIENT_ID) + (pjReviewerName ? ' — ' + pjReviewerName : '');
+  const b = document.createElement('button');
+  b.type = 'button'; b.className = 'pj-banner-link'; b.textContent = pjReviewerName ? '(trocar nome)' : '(informar nome)';
+  b.addEventListener('click', pjShowNameGate);
+  banner.appendChild(b);
 }
 
 function pjSetupRteToolbars(){
@@ -957,11 +1115,11 @@ window.initPlanejamento = async function(){
   if(PJ_REVIEW_MODE){
     document.body.classList.add('pj-review');
     document.getElementById('pjEditorActions').style.display = 'none';
-    const banner = document.getElementById('pjReviewBanner');
-    banner.style.display = 'block';
-    banner.textContent = PJ_REVIEW_CLIENT_ID
-      ? 'Modo revisão — ' + (PJ_REVIEW_CLIENT_NAME || PJ_REVIEW_CLIENT_ID) + ' — visualização para aprovação de conteúdo'
-      : 'Este link de revisão não está associado a um cliente. Peça um link atualizado.';
+    document.getElementById('pjNameOkBtn').addEventListener('click', pjConfirmName);
+    document.getElementById('pjNameInput').addEventListener('keydown', (ev)=>{ if(ev.key === 'Enter') pjConfirmName(); });
+    pjReviewerName = pjLoadReviewerName();
+    pjUpdateReviewBanner();
+    if(!pjReviewerName && PJ_REVIEW_CLIENT_ID) pjShowNameGate();
   }
 
   pjRenderLegend(); pjRenderWorkspaceTabs(); pjRenderLinkRow(); pjRenderCalendar();
@@ -980,8 +1138,9 @@ window.initPlanejamento = async function(){
   document.getElementById('pjSaveBtn').addEventListener('click', pjHandleSave);
   document.getElementById('pjDeleteBtn').addEventListener('click', pjHandleDelete);
   document.getElementById('pjResetBtn').addEventListener('click', pjHandleReset);
-  document.getElementById('pjApproveBtn').addEventListener('click', ()=>pjHandleReviewAction('Aprovado'));
-  document.getElementById('pjRequestChangesBtn').addEventListener('click', ()=>pjHandleReviewAction('Rascunho'));
+  document.getElementById('pjApproveBtn').addEventListener('click', ()=>pjHandleReviewAction('aprovado'));
+  document.getElementById('pjRequestChangesBtn').addEventListener('click', ()=>pjHandleReviewAction('ajuste'));
+  document.getElementById('pjRejectBtn').addEventListener('click', ()=>pjHandleReviewAction('reprovado'));
   document.getElementById('pjImage').addEventListener('input', (e)=>{
     pjCurrentImage = e.target.value.trim();
     document.getElementById('pjUploadHint').textContent = '';
