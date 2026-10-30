@@ -299,6 +299,7 @@
   .pj-chips{min-width:0;}
   .pj-chip{border-radius:8px;min-width:0;border:1px solid rgba(255,255,255,.7);box-shadow:0 1px 2px rgba(43,43,43,.06);}
   .pj-chip[draggable="true"]{cursor:grab;}
+  .pj-show-approved{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--ink-soft);cursor:pointer;margin-left:4px;}
   .pj-chip.dragging{opacity:.4;}
   .pj-chip-text{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .pj-ws-tabs{border-bottom:none;gap:8px;}
@@ -385,6 +386,18 @@
     .pj-top-right{width:100%;justify-content:space-between;}
     .pj-list-item{padding:12px 13px;gap:11px;}
   }
+  /* ── AJUSTES 5: desempenho e toque no celular ─────────────────────── */
+  @media (max-width:720px){
+    .pj-cell,.pj-list-item,.pj-chip,.logout-btn,.pj-nav-btn,.pj-today-btn,.pj-icon-btn,.pj-seg{-webkit-backdrop-filter:none;backdrop-filter:none;}
+    .pj-cell{touch-action:manipulation;min-height:84px;}
+    .pj-chip{min-height:26px;touch-action:manipulation;}
+    .pj-chips{gap:4px;}
+    .pj-overlay,.pj-dialog-overlay{-webkit-backdrop-filter:none;backdrop-filter:none;}
+    .pj-panel,.pj-dialog-box{-webkit-backdrop-filter:none;backdrop-filter:none;background:#fbfbf9;}
+    .pj-panel-footer{-webkit-backdrop-filter:none;backdrop-filter:none;background:#fbfbf9;}
+    .pj-grid{grid-auto-rows:minmax(84px,auto);}
+  }
+  .pj-chip,.pj-cell,.pj-list-item{-webkit-tap-highlight-color:transparent;}
 </style>
 </head>
 <body>
@@ -454,6 +467,7 @@
         <option value="ajuste">Ajuste ou reprovado</option>
       </select>
       <button type="button" class="pj-filter-clear" id="pjFilterClear" style="display:none;">limpar</button>
+      <label class="pj-show-approved" id="pjShowApprovedWrap" style="display:none;"><input type="checkbox" id="pjShowApproved"> Mostrar já aprovados</label>
     </div>
 
     <div class="pj-ws-tabs" id="pjWsTabs"></div>
@@ -706,6 +720,7 @@ let pjViewDate = new Date();
 let pjEditingId = null;
 let pjSelectedType = PJ_TYPES[0].id;
 let pjSelectedStatus = null;
+let pjHideApproved = PJ_REVIEW_MODE;
 let pjFilterType = '';
 let pjFilterStatus = '';
 let pjViewMode = 'cal';
@@ -830,6 +845,7 @@ function pjSituation(p){
   return 'pendente';
 }
 function pjPassesFilter(p){
+  if(pjHideApproved && pjSituation(p) === 'aprovado') return false;
   if(pjFilterType && p.type !== pjFilterType) return false;
   if(pjFilterStatus && pjSituation(p) !== pjFilterStatus) return false;
   return true;
@@ -860,7 +876,7 @@ function pjRenderList(){
   const items = pjPostsForActiveWorkspace().filter(p=>(p.date||'').startsWith(prefix) && pjPassesFilter(p)).sort((a,b)=>(a.date||'').localeCompare(b.date||'') || (a.title||'').localeCompare(b.title||''));
   if(!items.length){
     const empty = document.createElement('div'); empty.className = 'pj-list-empty';
-    empty.textContent = (pjFilterType || pjFilterStatus) ? 'Nenhum post neste mês com esses filtros.' : 'Nenhum post neste mês.';
+    empty.textContent = (pjFilterType || pjFilterStatus) ? 'Nenhum post neste mês com esses filtros.' : (pjHideApproved ? 'Nada pendente de aprovação neste mês. 🎉' : 'Nenhum post neste mês.');
     el.appendChild(empty); return;
   }
   const wd = ['dom','seg','ter','qua','qui','sex','sáb'];
@@ -888,7 +904,7 @@ function pjRenderList(){
     if(cap){ const c = document.createElement('div'); c.className = 'pj-list-text'; c.textContent = cap; body.appendChild(c); }
     else if(brief){ const c = document.createElement('div'); c.className = 'pj-list-text muted'; c.textContent = brief; body.appendChild(c); }
     row.append(dateEl, body);
-    row.addEventListener('click', async ()=>{ await pjRefreshPost(p.id); pjOpenModal(p.id, p.date); });
+    row.addEventListener('click', ()=>pjOpenPostFast(p.id, p.date));
     el.appendChild(row);
   });
 }
@@ -996,6 +1012,8 @@ function pjRenderCalendar(){
     cell.innerHTML = `<span class="pj-add-hint">+</span><div class="pj-daynum">${d.getDate()}</div><div class="pj-chips"></div>`;
     cell.addEventListener('click', (e)=>{
       if(e.target.closest('.pj-chip')) return;
+      const here = pjPostsForActiveWorkspace().filter(p=>p.date===key && pjPassesFilter(p));
+      if(here.length && (PJ_REVIEW_MODE || window.matchMedia('(max-width:720px)').matches)){ pjOpenPostFast(here[0].id, key); return; }
       if(PJ_REVIEW_MODE) return;
       pjOpenModal(null, key);
     });
@@ -1016,11 +1034,11 @@ function pjRenderCalendar(){
       chip.title = (t.label + ': ' + (p.title || '(sem título)'));
       chip.innerHTML = `${revMark}<span class="pj-dot" style="background:${t.color}"></span><span class="pj-chip-text"><b>${t.label}:</b> ${pjEscapeAttr(p.title || '(sem título)')}</span>${!pjRteEmpty(p.commentHtml) || p.comment ? '<span title="Tem comentário">💬</span>' : ''}`;
       if(!PJ_REVIEW_MODE){
-        chip.draggable = true;
+        chip.draggable = window.matchMedia('(hover:hover) and (pointer:fine)').matches;
         chip.addEventListener('dragstart', (e)=>{ e.dataTransfer.setData('text/plain', p.id); e.dataTransfer.effectAllowed = 'move'; chip.classList.add('dragging'); });
         chip.addEventListener('dragend', ()=>{ chip.classList.remove('dragging'); document.querySelectorAll('.pj-cell.drag-over').forEach(c=>c.classList.remove('drag-over')); });
       }
-      chip.addEventListener('click', async (e)=>{ e.stopPropagation(); await pjRefreshPost(p.id); pjOpenModal(p.id, key); });
+      chip.addEventListener('click', (e)=>{ e.stopPropagation(); pjOpenPostFast(p.id, key); });
       chipsEl.appendChild(chip);
     });
     if(dayPosts.length > 3){
@@ -1383,6 +1401,14 @@ function pjRenderReviewLog(p){
     return `<div class="pj-review-entry"><div class="pj-review-entry-head">${info.emoji} <b>${pjEscapeAttr(info.label)}</b> por ${pjEscapeAttr(e.by)} <span>${pjEscapeAttr(pjFmtDateTime(e.at))}</span></div>${comment}</div>`;
   }).join('');
 }
+function pjOpenPostFast(id, key){
+  pjOpenModal(id, key);
+  pjRefreshPost(id).then(()=>{
+    if(pjEditingId !== id) return;
+    const p = pjPostsForActiveWorkspace().find(x=>x.id===id);
+    if(p) pjRenderReviewLog(p);
+  });
+}
 async function pjRefreshPost(id){
   try{
     const snap = await window._fb.getDoc(window._fb.doc(window._fb.db,'calendarWorkspaces',pjActiveWorkspaceId,'posts',id));
@@ -1462,6 +1488,10 @@ window.initPlanejamento = async function(){
   document.getElementById('pjNextBtn').addEventListener('click', ()=>{ pjViewDate = new Date(pjViewDate.getFullYear(), pjViewDate.getMonth()+1, 1); pjRenderCalendar(); });
   document.getElementById('pjFilterType').addEventListener('change', (e)=>{ pjFilterType = e.target.value; pjRenderCalendar(); });
   document.getElementById('pjFilterStatus').addEventListener('change', (e)=>{ pjFilterStatus = e.target.value; pjRenderCalendar(); });
+  if(PJ_REVIEW_MODE){
+    document.getElementById('pjShowApprovedWrap').style.display = '';
+    document.getElementById('pjShowApproved').addEventListener('change', (e)=>{ pjHideApproved = !e.target.checked; pjRenderCalendar(); });
+  }
   document.getElementById('pjFilterClear').addEventListener('click', ()=>{ pjFilterType = ''; pjFilterStatus = ''; pjRenderCalendar(); });
   const setMode = (m)=>{ pjViewMode = m; try{ localStorage.setItem('pj-view-mode', m); }catch(e){} pjRenderCalendar(); };
   document.getElementById('pjViewCalBtn').addEventListener('click', ()=>setMode('cal'));
