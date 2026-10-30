@@ -398,6 +398,8 @@
     .pj-grid{grid-auto-rows:minmax(84px,auto);}
   }
   .pj-chip,.pj-cell,.pj-list-item{-webkit-tap-highlight-color:transparent;}
+  .pj-link-anchor{display:block;margin-top:7px;font-size:13.5px;font-weight:600;color:var(--yellow-deep);text-decoration:underline;word-break:break-all;overflow-wrap:anywhere;}
+  .pj-link-anchor:hover{color:var(--ink);}
 </style>
 </head>
 <body>
@@ -524,7 +526,7 @@
             <div class="pj-field"><label>Data</label><input type="date" id="pjDate"></div>
             <div class="pj-field"><label>Tipo de post</label><div class="pj-chip-select" id="pjTypeSelect"></div></div>
             <div class="pj-field"><label>Status</label><div class="pj-status-select" id="pjStatusSelect"></div></div>
-            <div class="pj-field"><label>Link (referência, drive, agendamento)</label><input type="url" id="pjLink" placeholder="https://"></div>
+            <div class="pj-field" id="pjLinkField"><label>Link (referência, drive, agendamento)</label><input type="url" id="pjLink" placeholder="https://"><a id="pjLinkAnchor" class="pj-link-anchor" href="#" target="_blank" rel="noopener noreferrer" style="display:none;"></a></div>
             <div class="pj-field" id="pjImagesField">
               <label>Imagens</label>
               <input type="url" id="pjImage" placeholder="Colar link da imagem e dar Enter">
@@ -1149,6 +1151,7 @@ function pjOpenModal(id, presetDateKey, presetTitle){
   document.getElementById('pjUploadHint').textContent = '';
 
   const locked = PJ_REVIEW_MODE;
+  pjUpdateLinkAnchor();
   ['pjTitle','pjDate','pjLink','pjImage'].forEach(fid=>{ document.getElementById(fid).disabled = locked; });
   ['pjBrief','pjCaption'].forEach(fid=>{ document.getElementById(fid).setAttribute('contenteditable', locked ? 'false' : 'true'); });
   document.getElementById('pjComment').setAttribute('contenteditable', 'true');
@@ -1401,6 +1404,17 @@ function pjRenderReviewLog(p){
     return `<div class="pj-review-entry"><div class="pj-review-entry-head">${info.emoji} <b>${pjEscapeAttr(info.label)}</b> por ${pjEscapeAttr(e.by)} <span>${pjEscapeAttr(pjFmtDateTime(e.at))}</span></div>${comment}</div>`;
   }).join('');
 }
+function pjUpdateLinkAnchor(){
+  const raw = document.getElementById('pjLink').value.trim();
+  const a = document.getElementById('pjLinkAnchor');
+  const ok = /^https?:\/\//i.test(raw);
+  if(ok){ a.href = raw; a.textContent = (PJ_REVIEW_MODE ? raw : 'Abrir link ↗'); a.style.display = 'block'; }
+  else { a.removeAttribute('href'); a.textContent = ''; a.style.display = 'none'; }
+  if(PJ_REVIEW_MODE){
+    document.getElementById('pjLink').style.display = 'none';
+    document.getElementById('pjLinkField').style.display = ok ? '' : 'none';
+  }
+}
 function pjOpenPostFast(id, key){
   pjOpenModal(id, key);
   pjRefreshPost(id).then(()=>{
@@ -1538,6 +1552,7 @@ window.initPlanejamento = async function(){
     lb.addEventListener('touchstart', (e)=>{ x0 = e.touches[0].clientX; }, {passive:true});
     lb.addEventListener('touchend', (e)=>{ if(x0 === null) return; const dx = e.changedTouches[0].clientX - x0; x0 = null; if(Math.abs(dx) > 50) pjLbStep(dx < 0 ? 1 : -1); }, {passive:true});
   })();
+  document.getElementById('pjLink').addEventListener('input', pjUpdateLinkAnchor);
   document.getElementById('pjLbClose').addEventListener('click', pjCloseLightbox);
   document.getElementById('pjLbPrev').addEventListener('click', ()=>pjLbStep(-1));
   document.getElementById('pjLbNext').addEventListener('click', ()=>pjLbStep(1));
